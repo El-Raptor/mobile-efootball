@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="350dp"
+    android:minHeight="550dp"
+    android:background="@drawable/dialog_register">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical"
+        android:background="@drawable/bck_efootball"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_vertical"
+            android:layout_marginTop="50dp"
+            android:text="@string/signup"
+            android:fontFamily="@font/krinkes_decor"
+            android:textColor="@color/white"
+            android:textSize="35sp" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edtEmailReg"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edt_register"
+        android:drawableLeft="@drawable/ic_baseline_email"
+        android:drawablePadding="10dp"
+        android:hint="@string/email_hint"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="5dp"
+        android:paddingTop="7dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="7dp"
+        android:elevation="5dp"
+        android:textColor="@color/light_gray"
+        android:textColorHint="@color/light_gray"
+        android:shadowDy="@android:integer/config_longAnimTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <EditText
+        android:id="@+id/edtUsernameReg"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edt_register"
+        android:drawableLeft="@drawable/ic_baseline_username"
+        android:drawablePadding="10dp"
+        android:hint="@string/username_hint"
+        android:inputType="textPersonName"
+        android:paddingLeft="5dp"
+        android:paddingTop="7dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="7dp"
+        android:elevation="5dp"
+        android:textColor="@color/light_gray"
+        android:textColorHint="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtEmailReg" />
+
+    <EditText
+        android:id="@+id/edtPasswordReg"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edt_register"
+        android:drawableLeft="@drawable/ic_baseline_vpn_key"
+        android:drawablePadding="10dp"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:paddingLeft="5dp"
+        android:paddingTop="7dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="7dp"
+        android:elevation="5dp"
+        android:textColor="@color/light_gray"
+        android:textColorHint="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtUsernameReg" />
+
+    <EditText
+        android:id="@+id/edtConfirmPass"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/edt_register"
+        android:drawableLeft="@drawable/ic_baseline_vpn_key"
+        android:drawablePadding="10dp"
+        android:hint="@string/confirm_password"
+        android:inputType="textPassword"
+        android:paddingLeft="5dp"
+        android:paddingTop="7dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="7dp"
+        android:elevation="5dp"
+        android:textColor="@color/light_gray"
+        android:textColorHint="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtPasswordReg" />
+
+    <TextView
+        android:id="@+id/tvIsMember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/is_member"
+        android:textSize="13dp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="@+id/edtConfirmPass"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/button_register"
+        android:text="@string/register"
+        android:elevation="5dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtConfirmPass" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

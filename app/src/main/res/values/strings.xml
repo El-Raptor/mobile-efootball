@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">eFootball Scores</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_teams">Times</string>
+    <string name="menu_players">Jogadores</string>
+    <string name="title_activity_login">Login</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="jogo">Jogo</string>
+    <string name="modo_de_jogo">Modo de Jogo</string>
+    <string name="adversario">Adversário</string>
+    <string name="meu_time">Seu Time</string>
+    <string name="time_adversario">Time do Adversário</string>
+    <string name="add">Adicionar</string>
+    <string name="date_pick">Selecione a Data</string>
+
+    <string name="register">Cadastre-se</string>
+    <string name="signup">Cadastro</string>
+    <string name="forget_pass">Esqueceu a senha?</string>
+    <string name="login">Entrar</string>
+    <string name="email_hint">user@email.com</string>
+    <string name="password">Senha</string>
+    <string name="is_member">Já Possui Cadastro?</string>
+    <string name="username_hint">Username</string>
+    <string name="confirm_password">Confirmar senha</string>
+    <string name="logout">Sair</string>
+    <string name="new_match_tip">Nova partida</string>
+    <string name="penalties">Pen</string>
+    <string name="add_match">Nova Partida</string>
+    
+    <string-array name="teams_array">
+        <item>Aalborg BK</item>
+        <item>Ajax</item>
+        <item>Al Ittihad</item>
+        <item>Athletico</item>
+        <item>Atl Madrid</item>
+        <item>Bahia</item>
+        <item>Barcelona</item>
+        <item>Bayern Mun</item>
+        <item>Bochum</item>
+        <item>Bor Dortmund</item>
+        <item>Chelsea</item>
+        <item>Chongqing</item>
+        <item>Corinthians</item>
+        <item>Daegu</item>
+        <item>Empoli FC</item>
+        <item>Flamengo</item>
+        <item>Fluminense</item>
+        <item>Fortaleza</item>
+        <item>Gif Sundsvall</item>
+        <item>Goiás</item>
+        <item>Grêmio</item>
+        <item>Internacional</item>
+        <item>Internazionale</item>
+        <item>Jeonnam</item>
+        <item>Juventus</item>
+        <item>Legia Warszawa</item>
+        <item>Liverpool</item>
+        <item>Mainz 05</item>
+        <item>Manchester Ct</item>
+        <item>Manchester Ut</item>
+        <item>Milan</item>
+        <item>Napoli</item>
+        <item>Newcastle</item>
+        <item>Newport County</item>
+        <item>Odds BK</item>
+        <item>Palmeiras</item>
+        <item>Paris FC</item>
+        <item>PSG</item>
+        <item>Real Madrid</item>
+        <item>Sampdoria</item>
+        <item>Santos</item>
+        <item>São Paulo</item>
+        <item>Sevilla</item>
+        <item>Shakhtar Don</item>
+        <item>Toronto</item>
+        <item>Tottenham</item>
+        <item>Udinese</item>
+        <item>Unión La Calera</item>
+        <item>Valenciennes</item>
+        <item>Valerenga</item>
+        <item>Wolfsberger AC</item>
+    </string-array>
+</resources>

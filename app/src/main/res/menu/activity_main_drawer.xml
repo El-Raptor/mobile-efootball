@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_baseline_sports"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_team"
+            android:icon="@drawable/ic_baseline_security"
+            android:title="@string/menu_teams" />
+        <item
+            android:id="@+id/nav_players"
+            android:icon="@drawable/ic_baseline_person"
+            android:title="@string/menu_players" />
+    </group>
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_baseline_exit_to_app"
+            android:title="@string/logout" />
+    </group>
+</menu>
