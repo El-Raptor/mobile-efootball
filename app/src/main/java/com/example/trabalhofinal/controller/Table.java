@@ -56,7 +56,15 @@ public abstract class Table<E> {
         tl.addView(headers);
     }
 
+    abstract public void initTable(List<E> e);
+
     abstract protected void dataRows(List<E> e, int numberOfColumns);
+
+    abstract protected void setValues(TableRow row, E e, int numberOfColumns);
+
+    protected String[] getValues(String values) {
+        return values.split(",");
+    }
 
     public TableLayout getTl() {
         return tl;

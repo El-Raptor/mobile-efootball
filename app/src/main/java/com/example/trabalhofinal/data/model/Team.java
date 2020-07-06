@@ -31,7 +31,11 @@ public class Team {
 
     @Override
     public String toString() {
-        return "";
+        return getBadgePath() + "," + getName() + "," + getStats().getGamesPlayed() + ","
+                + getStats().getWins() + "," + getStats().getDraws() + ","
+                + getStats().getDefeats() + "," + getStats().getGoalsFor()
+                + "," + getStats().getGoalsAgainst() + "," + getStats().goalsDifference() + "," +
+                getStats().performanceRate();
     }
 
     private String createPath(String teamName) {

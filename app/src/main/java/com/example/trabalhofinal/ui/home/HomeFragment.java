@@ -126,6 +126,7 @@ public class HomeFragment extends Fragment {
         btnNoPenalties.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addMatch(penMatch);
                 penaltiesDialog.dismiss();
             }
         });
@@ -179,30 +180,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newMatchDialog.dismiss();
-            }
-        });
-
-        btnAddMatch.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-            @Override
-            public void onClick(View v) {
-                Match addMatch = new Match();
-                Integer goalsFor = Integer.parseInt(edtGoalsFor.getText().toString());
-                Integer goalsAgainst = Integer.parseInt(edtGoalsAgainst.getText().toString());
-                System.out.println("Pen dialog: " + goalsFor);
-                if (goalsFor == goalsAgainst)
-                    openPenaltiesDialog(assembleMatch());
-                // TODO Refatorar (assemble match está sendo chamado demais)
-                else
-                    addMatch(addMatch);
-                newMatchDialog.dismiss();
-            }
-        });
-
         spHomeTeam.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -230,6 +207,29 @@ public class HomeFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newMatchDialog.dismiss();
+            }
+        });
+
+        btnAddMatch.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+            @Override
+            public void onClick(View v) {
+                Match addMatch = new Match();
+                addMatch = assembleMatch();
+                Integer goalsFor = Integer.parseInt(edtGoalsFor.getText().toString());
+                Integer goalsAgainst = Integer.parseInt(edtGoalsAgainst.getText().toString());
+                if (goalsFor == goalsAgainst)
+                    openPenaltiesDialog(addMatch);
+                else
+                    addMatch(addMatch);
+                newMatchDialog.dismiss();
             }
         });
 
@@ -262,7 +262,7 @@ public class HomeFragment extends Fragment {
             set.applyTo(constraintLayout);
         } else {
             TableLayout tableLayout = root.findViewById(R.id.table_matches);
-            TableMatch tableMatch = new TableMatch(getContext(), tableLayout);
+            TableMatch tableMatch = new TableMatch(getActivity(), tableLayout);
             tableMatch.initTable(matches);
         }
 

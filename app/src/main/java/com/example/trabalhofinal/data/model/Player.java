@@ -19,4 +19,12 @@ public class Player {
     public void setStats(Stats stats) {
         this.stats = stats;
     }
+
+    public String toString() {
+        return getName() + "," + getStats().getGamesPlayed() + ","
+                + getStats().getWins() + "," + getStats().getDraws() + ","
+                + getStats().getDefeats() + "," + getStats().getGoalsFor()
+                + "," + getStats().getGoalsAgainst() + "," + getStats().goalsDifference() + "," +
+                getStats().performanceRate();
+    }
 }

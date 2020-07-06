@@ -34,6 +34,7 @@ public class TableMatch extends Table<Match> {
         super(context, tl, 5);
     }
 
+    @Override
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void initTable(List<Match> matches) {
         header(labels);
@@ -59,6 +60,7 @@ public class TableMatch extends Table<Match> {
 
     }
 
+    @Override
     protected void setValues(TableRow row, Match match, int numberOfColumns) {
         List<TextView> values = new ArrayList<>();
 
@@ -91,10 +93,6 @@ public class TableMatch extends Table<Match> {
 
         row.addView(values.get(4));
 
-    }
-
-    private String[] getValues(String values) {
-        return values.split(",");
     }
 
 
