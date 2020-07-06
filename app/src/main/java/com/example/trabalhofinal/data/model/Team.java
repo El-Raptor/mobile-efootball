@@ -29,6 +29,11 @@ public class Team {
         this.stats = stats;
     }
 
+    @Override
+    public String toString() {
+        return "";
+    }
+
     private String createPath(String teamName) {
         String path = "team_" + teamName;
         path = path.toLowerCase();

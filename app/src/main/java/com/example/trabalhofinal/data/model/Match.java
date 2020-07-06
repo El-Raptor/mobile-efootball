@@ -93,4 +93,10 @@ public class Match {
     public void setPenaltiesGA(Integer penaltiesGA) {
         this.penaltiesGA = penaltiesGA;
     }
+
+    public String toString() {
+        return getMatchDate() + "," + getRival() + "," + getMyTeam() + "," + getGoalsFor()
+                + "," + getGoalsAgainst() + "," + getRivalTeam() + "," + getPenaltiesGF() + "," +
+                getPenaltiesGA();
+    }
 }

@@ -33,6 +33,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.trabalhofinal.MainActivity;
 import com.example.trabalhofinal.R;
+import com.example.trabalhofinal.controller.Table;
+import com.example.trabalhofinal.controller.TableMatch;
 import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.Match;
 import com.example.trabalhofinal.data.model.Player;
@@ -58,7 +60,8 @@ public class HomeFragment extends Fragment {
     private Spinner spHomeTeam, spAwayTeam;
     private ImageView imgAwayTeam, imgHomeTeam;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -66,7 +69,6 @@ public class HomeFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_home, container, false);
 
         loggedUser = ((MainActivity)getActivity()).getLoggedUser();
-
 
         init();
 
@@ -234,16 +236,13 @@ public class HomeFragment extends Fragment {
         newMatchDialog.show();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void init() {
         db = DBHelper.getInstance(getContext());
         List<Player> players = db.getAllPlayers(loggedUser);
 
         List<Match> matches = db.getAllMatches(loggedUser);
-        for (Player p : players) {
-            System.out.println(p.getName());
-            System.out.println(p.getStats().getGamesPlayed());
-        }
 
         if (matches.isEmpty()) {
             ConstraintLayout constraintLayout = root.findViewById(R.id.clHome);
@@ -262,8 +261,9 @@ public class HomeFragment extends Fragment {
 
             set.applyTo(constraintLayout);
         } else {
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-            initTable(matches, lp);
+            TableLayout tableLayout = root.findViewById(R.id.table_matches);
+            TableMatch tableMatch = new TableMatch(getContext(), tableLayout);
+            tableMatch.initTable(matches);
         }
 
         db.close();
@@ -292,159 +292,6 @@ public class HomeFragment extends Fragment {
         int resId = res.getIdentifier(badgePath, "drawable", getActivity().getPackageName());
         Drawable drawable = res.getDrawable(resId);
         return drawable;
-    }
-
-    @SuppressLint("NewApi")
-    private void initTable(List<Match> matches, TableRow.LayoutParams lp) {
-        TableLayout tableLayout = root.findViewById(R.id.table_matches);
-        Resources res = getResources();
-
-        // Cabeçalho da tabela.
-        TableRow headers = new TableRow(getContext());
-        headers.setLayoutParams(lp);
-        headers.setBackground(res.getDrawable(R.drawable.table_style));
-        headers.setElevation(2);
-
-        TextView label1 = new TextView(getContext());
-        label1.setText("Data");
-        label1.setTextColor(Color.WHITE);
-        label1.setGravity(Gravity.CENTER);
-        label1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        label1.setPadding(10, 10,10,10);
-
-        /*TextView label2 = new TextView(getContext());
-        label2.setText("Jogo");
-        label2.setTextColor(Color.WHITE);
-        label2.setBackgroundColor(Color.rgb(20, 20, 20));
-        label2.setGravity(Gravity.CENTER);
-
-        TextView label3 = new TextView(getContext());
-        label3.setText("Modo de Jogo");
-        label3.setTextColor(Color.WHITE);
-        label3.setBackgroundColor(Color.rgb(20, 20, 20));
-        label3.setGravity(Gravity.CENTER);*/
-
-        TextView label4 = new TextView(getContext());
-        label4.setText("Adversário");
-        label4.setTextColor(Color.WHITE);
-        label4.setGravity(Gravity.CENTER);
-        label4.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        label4.setPadding(10, 10,10,10);
-
-        TextView label5 = new TextView(getContext());
-        label5.setText("T. Casa");
-        label5.setTextColor(Color.WHITE);
-        label5.setGravity(Gravity.CENTER);
-        label5.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        label5.setPadding(10, 10,10,10);
-
-        TextView label6 = new TextView(getContext());
-        label6.setText("Res.");
-        label6.setTextColor(Color.WHITE);
-        label6.setGravity(Gravity.CENTER);
-        label6.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        label6.setPadding(10, 10,10,10);
-
-        TextView label7 = new TextView(getContext());
-        label7.setText("T. Fora");
-        label7.setTextColor(Color.WHITE);
-        label7.setGravity(Gravity.CENTER);
-        label7.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        label7.setPadding(10, 10,10,10);
-
-        /*TextView label8 = new TextView(getContext());
-        label8.setText("Pênaltis");
-        label8.setTextColor(Color.WHITE);
-        label8.setBackgroundColor(Color.rgb(20, 20, 20));
-        label8.setGravity(Gravity.CENTER);
-        label8.setPadding(5, 5,5,5);*/
-
-        headers.addView(label1);
-        //headers.addView(label2);
-        //headers.addView(label3);
-        headers.addView(label4);
-        headers.addView(label5);
-        headers.addView(label6);
-        headers.addView(label7);
-        //headers.addView(label8);
-
-        tableLayout.addView(headers);
-
-        tableSetValues(matches, tableLayout, lp);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void tableSetValues(List<Match> matches, TableLayout tableLayout, TableRow.LayoutParams lp) {
-        for (Match match : matches) {
-            TableRow tableRow = new TableRow(getActivity());
-            tableRow.setLayoutParams(lp);
-            tableRow.setPadding(5, 0, 5, 0);
-            tableRow.setBackgroundColor(Color.rgb(231, 231, 231));
-            tableRow.setGravity(Gravity.CENTER);
-
-            TextView column1 = new TextView(getActivity());
-            column1.setText(match.getMatchDate().toString());
-            column1.setBackgroundColor(Color.rgb(231, 231, 231));
-            column1.setGravity(Gravity.CENTER);
-
-            /*TextView column2 = new TextView(getContext());
-            column2.setText(match.getGame());
-            column2.setBackgroundColor(Color.rgb(231, 231, 231));
-            column2.setGravity(Gravity.CENTER);
-
-            TextView column3 = new TextView(getContext());
-            column3.setText(match.getGameMode());
-            column3.setBackgroundColor(Color.rgb(231, 231, 231));
-            column3.setGravity(Gravity.CENTER);*/
-
-            TextView column4 = new TextView(getContext());
-            column4.setText(match.getRival());
-            column4.setBackgroundColor(Color.rgb(231, 231, 231));
-            column4.setGravity(Gravity.CENTER);
-
-            TextView column5 = new TextView(getContext());
-            column5.setText(match.getMyTeam());
-            column5.setBackgroundColor(Color.rgb(231, 231, 231));
-            column5.setGravity(Gravity.CENTER);
-
-            TextView column6 = new TextView(getContext());
-            String result = match.getGoalsFor() + " x " + match.getGoalsAgainst();
-            column6.setText(result);
-            column6.setBackgroundColor(Color.rgb(231, 231, 231));
-            column6.setGravity(Gravity.CENTER);
-
-            TextView column7 = new TextView(getContext());
-            column7.setText(match.getRivalTeam());
-            column7.setBackgroundColor(Color.rgb(231, 231, 231));
-            column7.setGravity(Gravity.CENTER);
-            System.out.println("Pen HF: " + match.getPenaltiesGF());
-            if (!(match.getPenaltiesGF() == 0 && match.getPenaltiesGA() == 0)) {
-                String penaltiesResult = match.getPenaltiesGF() + " x " + match.getPenaltiesGA();
-                String matchScore = column7.getText().toString();
-                column7.setText(matchScore + "\n(" + penaltiesResult + ")");
-            }
-
-            /*TextView column8 = new TextView(getContext());
-            if (match.getPenaltiesGF() == 0 && match.getPenaltiesGA() == 0)
-                column8.setText(" ");
-            else {
-                String penaltiesResult = match.getPenaltiesGF() + " x " + match.getPenaltiesGA();
-                column8.setText(penaltiesResult);
-            }
-            column8.setBackgroundColor(Color.rgb(231, 231, 231));
-            column8.setGravity(Gravity.CENTER);*/
-
-            tableRow.addView(column1);
-            //tableRow.addView(column2);
-            //tableRow.addView(column3);
-            tableRow.addView(column4);
-            tableRow.addView(column5);
-            tableRow.addView(column6);
-            tableRow.addView(column7);
-            //tableRow.addView(column8);
-
-            tableLayout.addView(tableRow);
-        }
     }
 
     // TODO: Refatorar (?).
