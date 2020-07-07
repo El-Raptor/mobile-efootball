@@ -275,9 +275,9 @@ public class TableMatch extends Table<Match> {
                 } else {
                     MatchController mc = new MatchController(newMatchDialog.getContext());
                     mc.updateMatch(oldMatch, newMatch, loggedUser);
+                    Activity activity = (Activity) getContext();
+                    activity.recreate();
                 }
-                Activity activity = (Activity) getContext();
-                activity.recreate();
                 newMatchDialog.dismiss();
             }
         });
@@ -320,6 +320,8 @@ public class TableMatch extends Table<Match> {
                 MatchController mc = new MatchController(penaltiesDialog.getContext());
                 mc.addMatch(penMatch, loggedUser);
                 penaltiesDialog.dismiss();
+                Activity activity = (Activity) getContext();
+                activity.recreate();
             }
         });
 
@@ -329,6 +331,8 @@ public class TableMatch extends Table<Match> {
                 MatchController mc = new MatchController(penaltiesDialog.getContext());
                 mc.addMatch(penMatch, loggedUser);
                 penaltiesDialog.dismiss();
+                Activity activity = (Activity) getContext();
+                activity.recreate();
             }
         });
 

@@ -154,6 +154,7 @@ public class HomeFragment extends Fragment {
                 MatchController mc = new MatchController(penaltiesDialog.getContext());
                 mc.addMatch(penMatch, loggedUser);
                 penaltiesDialog.dismiss();
+                getActivity().recreate();
             }
         });
 
@@ -163,6 +164,7 @@ public class HomeFragment extends Fragment {
                 MatchController mc = new MatchController(penaltiesDialog.getContext());
                 mc.addMatch(penMatch, loggedUser);
                 penaltiesDialog.dismiss();
+                getActivity().recreate();
             }
         });
 
@@ -267,8 +269,8 @@ public class HomeFragment extends Fragment {
                 else {
                     MatchController mc = new MatchController(penaltiesDialog.getContext());
                     mc.addMatch(addMatch, loggedUser);
+                    getActivity().recreate();
                 }
-                getActivity().recreate();
 
                 newMatchDialog.dismiss();
             }
