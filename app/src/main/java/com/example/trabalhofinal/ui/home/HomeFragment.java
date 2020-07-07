@@ -33,8 +33,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.trabalhofinal.MainActivity;
 import com.example.trabalhofinal.R;
+import com.example.trabalhofinal.controller.MatchController;
 import com.example.trabalhofinal.controller.Table;
 import com.example.trabalhofinal.controller.TableMatch;
+import com.example.trabalhofinal.controller.TeamController;
 import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.Match;
 import com.example.trabalhofinal.data.model.Player;
@@ -55,7 +57,6 @@ public class HomeFragment extends Fragment {
     private Dialog newMatchDialog, penaltiesDialog;
     private DatePickerDialog dpd;
     private EditText edtDate, edtGame, edtGameMode, edtRival, edtGoalsFor, edtGoalsAgainst;
-    private Match newMatch;
     private User loggedUser;
     private Spinner spHomeTeam, spAwayTeam;
     private ImageView imgAwayTeam, imgHomeTeam;
@@ -85,6 +86,37 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void init() {
+        db = DBHelper.getInstance(getContext());
+
+        List<Match> matches = db.getAllMatches(loggedUser);
+        // TODO: otimizar o código dessa condição
+        if (matches.isEmpty()) {
+            ConstraintLayout constraintLayout = root.findViewById(R.id.clHome);
+            ConstraintSet set = new ConstraintSet();
+
+            TextView emptyList = new TextView(getContext());
+            emptyList.setText("Nenhuma partida encontrada!");
+            emptyList.setId(View.generateViewId());
+            emptyList.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            constraintLayout.addView(emptyList, 0);
+
+            set.clone(constraintLayout);
+            // Adicionando as constraints layouts para o novo TextView.
+            set.centerHorizontally(emptyList.getId(), constraintLayout.getId());
+            set.centerVertically(emptyList.getId(), constraintLayout.getId());
+
+            set.applyTo(constraintLayout);
+        } else {
+            TableLayout tableLayout = root.findViewById(R.id.table_matches);
+            TableMatch tableMatch = new TableMatch(getActivity(), tableLayout);
+            tableMatch.initTable(matches);
+        }
+
+        db.close();
+    }
+
     private void openPenaltiesDialog(final Match match) {
         final Match penMatch = match;
         penaltiesDialog.setContentView(R.layout.fragment_penalties);
@@ -96,15 +128,16 @@ public class HomeFragment extends Fragment {
         ImageView imgAwayTeam = (ImageView) penaltiesDialog.findViewById(R.id.imgAwayTeam);
 
         Team homeTeam = new Team();
+        TeamController tc = new TeamController(penaltiesDialog.getContext());
         homeTeam.setName(match.getMyTeam());
         homeTeam.setBadgePath();
-        imgHomeTeam.setImageDrawable(getTeamBadge(homeTeam.getBadgePath()));
+        imgHomeTeam.setImageDrawable(tc.getTeamBadge(homeTeam.getBadgePath()));
 
         // TODO
         Team awayTeam = new Team();
         awayTeam.setName(match.getRivalTeam());
         awayTeam.setBadgePath();
-        imgAwayTeam.setImageDrawable(getTeamBadge(awayTeam.getBadgePath()));
+        imgAwayTeam.setImageDrawable(tc.getTeamBadge(awayTeam.getBadgePath()));
 
         btnPenalties.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,13 +145,12 @@ public class HomeFragment extends Fragment {
                 Integer penGF = Integer.parseInt(edtGoalsForPen.getText().toString());
                 Integer penGA = Integer.parseInt(edtGoalsAgainstPen.getText().toString());
                 if ((penGF != 0 || penGF != null) && (penGA != 0 || penGA != null)) {
-                    System.out.println("EdtGF");
-                    System.out.println(Integer.parseInt(edtGoalsForPen.getText().toString()));
                     penMatch.setPenaltiesGF(Integer.parseInt(edtGoalsForPen.getText().toString()));
                     penMatch.setPenaltiesGA(Integer.parseInt(edtGoalsAgainstPen.getText().toString()));
                     System.out.println(penMatch.getPenaltiesGF());
                 }
-                addMatch(penMatch);
+                MatchController mc = new MatchController(penaltiesDialog.getContext());
+                mc.addMatch(penMatch, loggedUser);
                 penaltiesDialog.dismiss();
             }
         });
@@ -126,7 +158,8 @@ public class HomeFragment extends Fragment {
         btnNoPenalties.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addMatch(penMatch);
+                MatchController mc = new MatchController(penaltiesDialog.getContext());
+                mc.addMatch(penMatch, loggedUser);
                 penaltiesDialog.dismiss();
             }
         });
@@ -184,9 +217,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Team team = new Team();
+                TeamController tc = new TeamController(newMatchDialog.getContext());
                 team.setName(spHomeTeam.getSelectedItem().toString());
                 team.setBadgePath();
-                imgHomeTeam.setImageDrawable(getTeamBadge(team.getBadgePath()));
+                imgHomeTeam.setImageDrawable(tc.getTeamBadge(team.getBadgePath()));
             }
 
             @Override
@@ -199,9 +233,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Team team = new Team();
+                TeamController tc = new TeamController(newMatchDialog.getContext());
                 team.setName(spAwayTeam.getSelectedItem().toString());
                 team.setBadgePath();
-                imgAwayTeam.setImageDrawable(getTeamBadge(team.getBadgePath()));
+                imgAwayTeam.setImageDrawable(tc.getTeamBadge(team.getBadgePath()));
             }
 
             @Override
@@ -221,14 +256,16 @@ public class HomeFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onClick(View v) {
-                Match addMatch = new Match();
-                addMatch = assembleMatch();
+                Match addMatch = assembleMatch();
+                System.out.println("On click " + addMatch.getMyTeam());
                 Integer goalsFor = Integer.parseInt(edtGoalsFor.getText().toString());
                 Integer goalsAgainst = Integer.parseInt(edtGoalsAgainst.getText().toString());
                 if (goalsFor == goalsAgainst)
                     openPenaltiesDialog(addMatch);
-                else
-                    addMatch(addMatch);
+                else {
+                    MatchController mc = new MatchController(penaltiesDialog.getContext());
+                    mc.addMatch(addMatch, loggedUser);
+                }
                 newMatchDialog.dismiss();
             }
         });
@@ -236,246 +273,25 @@ public class HomeFragment extends Fragment {
         newMatchDialog.show();
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void init() {
-        db = DBHelper.getInstance(getContext());
-        List<Player> players = db.getAllPlayers(loggedUser);
-
-        List<Match> matches = db.getAllMatches(loggedUser);
-
-        if (matches.isEmpty()) {
-            ConstraintLayout constraintLayout = root.findViewById(R.id.clHome);
-            ConstraintSet set = new ConstraintSet();
-
-            TextView emptyList = new TextView(getContext());
-            emptyList.setText("Nenhuma partida encontrada!");
-            emptyList.setId(View.generateViewId());
-            emptyList.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-            constraintLayout.addView(emptyList, 0);
-
-            set.clone(constraintLayout);
-            // Adicionando as constraints layouts para o novo TextView.
-            set.centerHorizontally(emptyList.getId(), constraintLayout.getId());
-            set.centerVertically(emptyList.getId(), constraintLayout.getId());
-
-            set.applyTo(constraintLayout);
-        } else {
-            TableLayout tableLayout = root.findViewById(R.id.table_matches);
-            TableMatch tableMatch = new TableMatch(getActivity(), tableLayout);
-            tableMatch.initTable(matches);
-        }
-
-        db.close();
-    }
-
     private Match assembleMatch() {
         String homeTeam = spHomeTeam.getSelectedItem().toString();
         String awayTeam = spAwayTeam.getSelectedItem().toString();
 
-        newMatch = new Match();
+        Match match = new Match();
 
-        newMatch.setMatchDate(Date.valueOf(edtDate.getText().toString()));
-        newMatch.setGame(edtGame.getText().toString());
-        newMatch.setGameMode(edtGameMode.getText().toString());
-        newMatch.setRival(edtRival.getText().toString());
-        newMatch.setMyTeam(homeTeam);
-        newMatch.setRivalTeam(awayTeam);
-        newMatch.setGoalsFor(Integer.parseInt(edtGoalsFor.getText().toString()));
-        newMatch.setGoalsAgainst(Integer.parseInt(edtGoalsAgainst.getText().toString()));
+        match.setMatchDate(Date.valueOf(edtDate.getText().toString()));
+        match.setGame(edtGame.getText().toString());
+        match.setGameMode(edtGameMode.getText().toString());
+        match.setRival(edtRival.getText().toString());
+        match.setMyTeam(homeTeam);
+        match.setRivalTeam(awayTeam);
+        match.setGoalsFor(Integer.parseInt(edtGoalsFor.getText().toString()));
+        match.setGoalsAgainst(Integer.parseInt(edtGoalsAgainst.getText().toString()));
 
-        return newMatch;
+        System.out.println("Assemble " + match.getGoalsFor());
+
+        return match;
     }
 
-    private Drawable getTeamBadge(String badgePath) {
-        Resources res = getResources();
-        int resId = res.getIdentifier(badgePath, "drawable", getActivity().getPackageName());
-        Drawable drawable = res.getDrawable(resId);
-        return drawable;
-    }
-
-    // TODO: Refatorar (?).
-
-    public void addMatch(Match newMatch) {
-
-        db = DBHelper.getInstance(getActivity());
-        checkTeam(assembleTeam(newMatch, 1));
-        checkTeam(assembleTeam(newMatch, 2));
-
-        checkPlayer(assemblePlayer(newMatch));
-
-        db.addMatch(newMatch, loggedUser);
-
-        db.close();
-
-    }
-
-
-    private void checkTeam(Team team) {
-        List<Team> teamResult = db.getTeam(team.getName(), loggedUser);
-        if (teamResult.isEmpty())
-            db.addTeam(team, loggedUser);
-
-        else
-            updateTeam(teamResult.get(0));
-
-    }
-
-    private void checkPlayer(Player player) {
-        List<Player> playerResult = db.getPlayer(player.getName(), loggedUser);
-        if (playerResult.isEmpty())
-            db.addPlayer(player, loggedUser);
-        else
-            updatePlayer(playerResult.get(0));
-
-    }
-
-    private void updateTeam(Team team) {
-        Stats newStats = new Stats();
-        int gamesPlayedUp = team.getStats().getGamesPlayed();
-
-        if (team.getName() == newMatch.getMyTeam()) {
-            int goalsForUp = team.getStats().getGoalsFor() + newMatch.getGoalsFor();
-            int goalsAgainstUp = team.getStats().getGoalsAgainst() + newMatch.getGoalsAgainst();
-            int winsUp = team.getStats().getWins();
-            int drawsUp = team.getStats().getDraws();
-            int defeatsUp = team.getStats().getDefeats();
-
-            if (newMatch.getGoalsFor() > newMatch.getGoalsAgainst())
-                winsUp++;
-            else if (newMatch.getGoalsFor() < newMatch.getGoalsAgainst())
-                defeatsUp++;
-            else
-                drawsUp++;
-
-            newStats.setGamesPlayed(gamesPlayedUp + 1);
-            newStats.setWins(winsUp);
-            newStats.setDraws(drawsUp);
-            newStats.setDefeats(defeatsUp);
-            newStats.setGoalsFor(goalsForUp);
-            newStats.setGoalsAgainst(goalsAgainstUp);
-
-        } else if (team.getName() == newMatch.getRivalTeam()) {
-            int goalsForUp = team.getStats().getGoalsFor() + newMatch.getGoalsAgainst();
-            int goalsAgainstUp = team.getStats().getGoalsAgainst() + newMatch.getGoalsFor();
-            int winsUp = team.getStats().getWins();
-            int drawsUp = team.getStats().getDraws();
-            int defeatsUp = team.getStats().getDefeats();
-
-            if (newMatch.getGoalsFor() < newMatch.getGoalsAgainst())
-                winsUp++;
-            else if (newMatch.getGoalsFor() > newMatch.getGoalsAgainst())
-                defeatsUp++;
-            else
-                drawsUp++;
-
-            newStats.setGamesPlayed(gamesPlayedUp + 1);
-            newStats.setWins(winsUp);
-            newStats.setDraws(drawsUp);
-            newStats.setDefeats(defeatsUp);
-            newStats.setGoalsFor(goalsForUp);
-            newStats.setGoalsAgainst(goalsAgainstUp);
-        } // TODO: Verificar para se foi para os pênaltis.
-
-        team.setStats(newStats);
-        db.updateTeamStats(team, loggedUser);
-    }
-
-    public void updatePlayer(Player player) {
-        Stats newStats = new Stats();
-
-        int gamesPlayedUp = player.getStats().getGamesPlayed();
-        int winsUp = player.getStats().getWins();
-        int drawsUp = player.getStats().getDraws();
-        int defeatsUp = player.getStats().getDefeats();
-        int goalsForUp = player.getStats().getGoalsFor() + newMatch.getGoalsAgainst();
-        int goalsAgainstUp = player.getStats().getGoalsAgainst() + newMatch.getGoalsFor();
-
-        if (newMatch.getGoalsAgainst() > newMatch.getGoalsFor())
-            winsUp++;
-        else if (newMatch.getGoalsAgainst() < newMatch.getGoalsFor())
-            defeatsUp++;
-        else
-            drawsUp++;
-        // TODO: Verificar para se foi para os pênaltis.
-
-        newStats.setGamesPlayed(gamesPlayedUp + 1);
-        newStats.setWins(winsUp);
-        newStats.setDraws(drawsUp);
-        newStats.setDefeats(defeatsUp);
-        newStats.setGoalsFor(goalsForUp);
-        newStats.setGoalsAgainst(goalsAgainstUp);
-
-        player.setStats(newStats);
-        db.updatePlayerStats(player, loggedUser);
-    }
-
-    private Player assemblePlayer(Match match) {
-        Player player = new Player();
-        player.setName(match.getRival());
-        Stats stats = new Stats();
-        stats.setGamesPlayed(1);
-        stats.setWins(0);
-        stats.setDraws(0);
-        stats.setDefeats(0);
-        stats.setGoalsFor(match.getGoalsAgainst());
-        stats.setGoalsAgainst(match.getGoalsFor());
-
-        if (match.getGoalsAgainst() > match.getGoalsFor())
-            stats.setWins(1);
-        else if (match.getGoalsAgainst() < match.getGoalsFor())
-            stats.setDefeats(1);
-        else
-            stats.setDraws(1);
-        // TODO: Verificar se foi para os pênaltis.
-
-        player.setStats(stats);
-        return player;
-    }
-
-    private Team assembleTeam(Match match, int homerOrAway) {
-        Team team = new Team();
-        if (homerOrAway == 1) {
-            team.setName(match.getMyTeam());
-            team.setBadgePath();
-            Stats stats = new Stats();
-            stats.setGamesPlayed(1);
-            stats.setWins(0);
-            stats.setDefeats(0);
-            stats.setDraws(0);
-            stats.setGoalsFor(match.getGoalsFor());
-            stats.setGoalsAgainst(match.getGoalsAgainst());
-
-            if (match.getGoalsFor() > match.getGoalsAgainst())
-                stats.setWins(1);
-            else if (match.getGoalsFor() < match.getGoalsAgainst())
-                stats.setDefeats(1);
-            else
-                stats.setDraws(1);
-            // TODO: Verificar se foi para os pênaltis.
-            team.setStats(stats);
-            return team;
-        }
-
-        team.setName(match.getRivalTeam());
-        team.setBadgePath();
-        Stats stats = new Stats();
-        stats.setGamesPlayed(1);
-        stats.setWins(0);
-        stats.setDraws(0);
-        stats.setDefeats(0);
-        stats.setGoalsFor(match.getGoalsAgainst());
-        stats.setGoalsAgainst(match.getGoalsFor());
-
-        if (match.getGoalsAgainst() > match.getGoalsFor())
-            stats.setWins(1);
-        else if (match.getGoalsAgainst() < match.getGoalsFor())
-            stats.setDefeats(1);
-        else
-            stats.setDraws(1);
-
-        team.setStats(stats);
-        return team;
-    }
 
 }

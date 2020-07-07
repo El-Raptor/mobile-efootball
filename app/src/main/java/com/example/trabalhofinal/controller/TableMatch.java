@@ -1,24 +1,34 @@
 package com.example.trabalhofinal.controller;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.trabalhofinal.R;
 import com.example.trabalhofinal.data.model.Match;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TableMatch extends Table<Match> {
 
+    private Dialog editDialog;
     private List<String> labels = new ArrayList<String>(){
         {
             add("Data");
@@ -43,7 +53,7 @@ public class TableMatch extends Table<Match> {
 
     @Override
     protected void dataRows(List<Match> matches, int numberOfColumns) {
-        List<TableRow> rows = new ArrayList<>();
+        final List<TableRow> rows = new ArrayList<>();
 
         for (int i = 0; i < matches.size(); i++) {
             rows.add(new TableRow(super.getContext()));
@@ -56,8 +66,44 @@ public class TableMatch extends Table<Match> {
             rows.get(i).setGravity(Gravity.CENTER);
             setValues(rows.get(i), matches.get(i), numberOfColumns);
             getTl().addView(rows.get(i));
+
+            final TableRow currentRow = rows.get(i);
+            currentRow.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    TextView tvMatchId = (TextView) currentRow.getChildAt(0);
+                    String matchId = tvMatchId.getText().toString();
+                    System.out.println(matchId);
+                    editDialog = new Dialog(getContext());
+                    //openDialog(rowId);
+                    return true;
+                }
+            });
+
         }
 
+    }
+
+    private void openDialog(int id) {
+        editDialog.setContentView(R.layout.fragment_edit_row);
+        Button btnEdit = editDialog.findViewById(R.id.btnEdit);
+        Button btnDelete = editDialog.findViewById(R.id.btnEdit);
+
+        TableRow row = editDialog.findViewById(id);
+
+
+        TextView textView = editDialog.findViewById(R.id.textView);
+        textView.setText(row.getChildAt(1).toString());
+
+
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editDialog.dismiss();
+            }
+        });
+
+        editDialog.show();
     }
 
     @Override

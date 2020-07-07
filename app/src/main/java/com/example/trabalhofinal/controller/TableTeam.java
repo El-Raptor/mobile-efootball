@@ -66,7 +66,7 @@ public class TableTeam extends Table<Team> {
     @Override
     protected void setValues(TableRow row, Team team, int numberOfColumns) {
 
-        controller = new TeamController(getContext(), team);
+        controller = new TeamController(getContext());
         ImageView column0 = new ImageView(getContext());
         column0.setImageDrawable(controller.getTeamBadge(team.getBadgePath()));
         column0.setScaleType(ImageView.ScaleType.CENTER);

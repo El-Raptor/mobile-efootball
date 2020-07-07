@@ -42,6 +42,8 @@
     <string name="new_match_tip">Nova partida</string>
     <string name="penalties">Pen</string>
     <string name="add_match">Nova Partida</string>
+    <string name="edit_row">Editar</string>
+    <string name="delete">Deletar</string>
     
     <string-array name="teams_array">
         <item>Aalborg BK</item>

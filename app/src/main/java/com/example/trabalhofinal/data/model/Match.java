@@ -3,6 +3,8 @@ package com.example.trabalhofinal.data.model;
 import java.sql.Date;
 
 public class Match {
+
+    private int id;
     private Date matchDate;
     private String game;
     private String gameMode;
@@ -13,6 +15,10 @@ public class Match {
     private String rivalTeam;
     private Integer penaltiesGF;
     private Integer penaltiesGA;
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public Date getMatchDate() {
         return matchDate;
