@@ -162,6 +162,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent it = new Intent(this, MainActivity.class);
             it.putExtra("user", (Serializable) verifyingUser);
             startActivity(it);
+            finish();
 
         } else
             Toast.makeText(
