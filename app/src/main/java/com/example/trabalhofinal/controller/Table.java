@@ -14,7 +14,9 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 
 import com.example.trabalhofinal.R;
+import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.Match;
+import com.example.trabalhofinal.data.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

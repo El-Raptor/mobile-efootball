@@ -27,16 +27,20 @@ public class TeamController {
         return drawable;
     }
 
-    public void checkTeam(Team team, DBHelper db, User loggedUser, Match addingMatch) {
+    public void checkTeam(Team team, DBHelper db, User loggedUser, Match match, boolean add) {
         List<Team> teamResult = db.getTeam(team.getName(), loggedUser);
         if (teamResult.isEmpty())
             db.addTeam(team, loggedUser);
 
-        else
-            updateTeam(teamResult.get(0), db, addingMatch, loggedUser);
+        else {
+            if (add)
+                updateAddedTeam(teamResult.get(0), db, match, loggedUser);
+            else
+                updateRemovedTeam(teamResult.get(0), db, match, loggedUser);
+        }
     }
 
-    private void updateTeam(Team updatingTeam, DBHelper db, Match addingMatch, User loggedUser) {
+    private void updateAddedTeam(Team updatingTeam, DBHelper db, Match addingMatch, User loggedUser) {
         Stats newStats = new Stats();
         int gamesPlayedUp = updatingTeam.getStats().getGamesPlayed();
         int goalsFor = addingMatch.getGoalsFor();
@@ -51,7 +55,7 @@ public class TeamController {
             penAgainst = addingMatch.getPenaltiesGA();
         }
 
-        if (updatingTeam.getName() == addingMatch.getMyTeam()) {
+        if (updatingTeam.getName().equals(addingMatch.getMyTeam())) {
             int goalsForUp = updatingTeam.getStats().getGoalsFor() + addingMatch.getGoalsFor();
             int goalsAgainstUp = updatingTeam.getStats().getGoalsAgainst() + addingMatch.getGoalsAgainst();
             int winsUp = updatingTeam.getStats().getWins();
@@ -72,7 +76,7 @@ public class TeamController {
             newStats.setGoalsFor(goalsForUp);
             newStats.setGoalsAgainst(goalsAgainstUp);
 
-        } else if (updatingTeam.getName() == addingMatch.getRivalTeam()) {
+        } else if (updatingTeam.getName().equals(addingMatch.getRivalTeam())) {
             int goalsForUp = updatingTeam.getStats().getGoalsFor() + addingMatch.getGoalsAgainst();
             int goalsAgainstUp = updatingTeam.getStats().getGoalsAgainst() + addingMatch.getGoalsFor();
             int winsUp = updatingTeam.getStats().getWins();
@@ -97,6 +101,77 @@ public class TeamController {
 
         updatingTeam.setStats(newStats);
         db.updateTeamStats(updatingTeam, loggedUser);
+    }
+
+    private void updateRemovedTeam(Team updatingTeam, DBHelper db, Match match, User loggedUser) {
+        Stats newStats = new Stats();
+        int gamesPlayedUp = updatingTeam.getStats().getGamesPlayed();
+        int goalsFor = match.getGoalsFor();
+        int goalsAgainst = match.getGoalsAgainst();
+        int penFor;
+        int penAgainst;
+        if (match.getPenaltiesGF() == null) {
+            penFor = 0;
+            penAgainst = 0;
+        } else {
+            penFor = match.getPenaltiesGF();
+            penAgainst = match.getPenaltiesGA();
+        }
+
+        if (updatingTeam.getName().equals(match.getMyTeam())) {
+            int goalsForUp = updatingTeam.getStats().getGoalsFor() + match.getGoalsFor();
+            int goalsAgainstUp = updatingTeam.getStats().getGoalsAgainst() + match.getGoalsAgainst();
+            int winsUp = updatingTeam.getStats().getWins();
+            int drawsUp = updatingTeam.getStats().getDraws();
+            int defeatsUp = updatingTeam.getStats().getDefeats();
+
+            if (result(goalsFor, goalsAgainst, penFor, penAgainst) == 1)
+                winsUp--;
+            else if (result(goalsFor, goalsAgainst, penFor, penAgainst) == 1)
+                defeatsUp--;
+            else
+                drawsUp--;
+
+            newStats.setGamesPlayed(gamesPlayedUp - 1);
+            newStats.setWins(winsUp);
+            newStats.setDraws(drawsUp);
+            newStats.setDefeats(defeatsUp);
+            newStats.setGoalsFor(goalsForUp);
+            newStats.setGoalsAgainst(goalsAgainstUp);
+
+        } else if (updatingTeam.getName().equals(match.getRivalTeam())) {
+            int goalsForUp = updatingTeam.getStats().getGoalsFor() + match.getGoalsAgainst();
+            int goalsAgainstUp = updatingTeam.getStats().getGoalsAgainst() + match.getGoalsFor();
+            int winsUp = updatingTeam.getStats().getWins();
+            int drawsUp = updatingTeam.getStats().getDraws();
+            int defeatsUp = updatingTeam.getStats().getDefeats();
+
+            if (result(goalsAgainst, goalsFor, penAgainst, penFor) == 1)
+                winsUp--;
+            else if (result(goalsAgainst, goalsFor, penAgainst, penFor) == 1)
+                defeatsUp--;
+            else
+                drawsUp--;
+
+
+            newStats.setGamesPlayed(gamesPlayedUp - 1);
+            newStats.setWins(winsUp);
+            newStats.setDraws(drawsUp);
+            newStats.setDefeats(defeatsUp);
+            newStats.setGoalsFor(goalsForUp);
+            newStats.setGoalsAgainst(goalsAgainstUp);
+        }
+
+        updatingTeam.setStats(newStats);
+        db.updateTeamStats(updatingTeam, loggedUser);
+    }
+
+    public void hasGame(String oldTeam, DBHelper db, User loggedUser) {
+        Team team = db.getTeam(oldTeam, loggedUser).get(0);
+
+        if (team.getStats().getGamesPlayed() == 0) {
+            db.deleteTeam(team, loggedUser);
+        }
     }
 
     public Team assembleTeam(Match match, int homerOrAway) {

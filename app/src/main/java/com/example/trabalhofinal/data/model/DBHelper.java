@@ -464,6 +464,45 @@ public class DBHelper extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     Match newMatch = new Match();
+                    newMatch.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_MATCHID)));
+                    newMatch.setMatchDate(Date.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_DATE))));
+                    newMatch.setGame(cursor.getString(cursor.getColumnIndex(COLUMN_GAME)));
+                    newMatch.setGameMode(cursor.getString(cursor.getColumnIndex(COLUMN_GAME_MODE)));
+                    newMatch.setRival(cursor.getString(cursor.getColumnIndex(COLUMN_RIVAL)));
+                    newMatch.setMyTeam(cursor.getString(cursor.getColumnIndex(COLUMN_HOME_TEAM)));
+                    newMatch.setGoalsFor(cursor.getInt(cursor.getColumnIndex(COLUMN_GOALS_FOR)));
+                    newMatch.setGoalsAgainst(cursor.getInt(cursor.getColumnIndex(COLUMN_GOALS_AGAINST)));
+                    newMatch.setRivalTeam(cursor.getString(cursor.getColumnIndex(COLUMN_AWAY_TEAM)));
+                    newMatch.setPenaltiesGF(cursor.getInt(cursor.getColumnIndex(COLUMN_PENALTIES_GF)));
+                    newMatch.setPenaltiesGA(cursor.getInt(cursor.getColumnIndex(COLUMN_PENALTIES_GC)));
+
+                    matches.add(newMatch);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d("TAG", "Error while trying to get matches from database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+
+        return matches;
+    }
+
+    public List<Match> getMatch(User user, int id) {
+        List<Match> matches = new ArrayList<>();
+
+        String MATCH_SELECT_QUERY = String.format("SELECT * FROM %s WHERE %s = '%s' AND %s = '%s'",
+                TABLE_MATCH, COLUMN_USER_FK, user.getEmail(), COLUMN_MATCHID, id);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(MATCH_SELECT_QUERY, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    Match newMatch = new Match();
+                    newMatch.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_MATCHID)));
                     newMatch.setMatchDate(Date.valueOf(cursor.getString(cursor.getColumnIndex(COLUMN_DATE))));
                     newMatch.setGame(cursor.getString(cursor.getColumnIndex(COLUMN_GAME)));
                     newMatch.setGameMode(cursor.getString(cursor.getColumnIndex(COLUMN_GAME_MODE)));
@@ -524,6 +563,30 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return teams;
+    }
+
+    public int updateMatch(Match match, User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DATE, match.getMatchDate().toString());
+        values.put(COLUMN_GAME, match.getGame());
+        values.put(COLUMN_GAME_MODE, match.getGameMode());
+        values.put(COLUMN_RIVAL, match.getRival());
+        values.put(COLUMN_HOME_TEAM, match.getMyTeam());
+        values.put(COLUMN_GOALS_FOR, match.getGoalsFor());
+        values.put(COLUMN_GOALS_AGAINST, match.getGoalsAgainst());
+        values.put(COLUMN_AWAY_TEAM, match.getRivalTeam());
+        values.put(COLUMN_USER_FK, user.getEmail());
+        if (match.getPenaltiesGF() != null) {
+            values.put(COLUMN_PENALTIES_GF, match.getPenaltiesGF());
+            values.put(COLUMN_PENALTIES_GC, match.getPenaltiesGA());
+        }
+
+        return db.update(TABLE_MATCH, values,
+                COLUMN_MATCHID + " = ? AND " + COLUMN_USER_FK + " = ?",
+                new String[] {String.valueOf(match.getId()), String.valueOf(user.getEmail())});
+
     }
 
     public void updateTeamStats(Team team, User user) {
@@ -677,35 +740,34 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] {String.valueOf(player.getName()), String.valueOf(user.getEmail())});
     }
 
-    /*public boolean updateMarca(Brand newMarca, Brand oldMarca) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("UPDATE "+ TABLE_MATCH +" SET marca = "+"'"+newMarca.getMarca()+"' WHERE modelo = "+"'"+oldMarca.getMarca()+"'");
-        return true;
-    }
 
-    public void deleteModelo(Cellphone modelo) {
+    public void deleteTeam(Team team, User user) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
-            db.delete(TABLE_TEAM, COLUMN_MODELO + " = ?", new String[]{modelo.getModelo()});
+            db.delete(TABLE_TEAM,
+                    COLUMN_TEAM_NAME + " = ? AND " + COLUMN_USER_FK + " = ?"
+                    , new String[]{team.getName(), user.getEmail()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Log.d("TAG", "Error while trying to delete modelo");
+            Log.d("TAG", "Error while trying to delete a team");
         } finally {
             db.endTransaction();
         }
     }
 
-   /* public void deleteMarca(Brand marca) {
+    public void deletePlayer(Player player, User user) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
-            db.delete(TABLE_MATCH, COLUMN_MARCA + " = ?", new String[]{marca.getMarca()});
+            db.delete(TABLE_PLAYER,
+                    COLUMN_PLAYER_NAME + " = ? AND " + COLUMN_USER_FK + " = ?"
+                    , new String[]{player.getName(), user.getEmail()});
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Log.d("TAG", "Error while trying to delete marca");
+            Log.d("TAG", "Error while trying to delete a player");
         } finally {
             db.endTransaction();
         }
-    }*/
+    }
 }

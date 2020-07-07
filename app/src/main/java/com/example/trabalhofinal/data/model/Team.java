@@ -31,7 +31,7 @@ public class Team {
 
     @Override
     public String toString() {
-        return getBadgePath() + "," + getName() + "," + getStats().getGamesPlayed() + ","
+        return getName() + "," + getStats().getGamesPlayed() + ","
                 + getStats().getWins() + "," + getStats().getDraws() + ","
                 + getStats().getDefeats() + "," + getStats().getGoalsFor()
                 + "," + getStats().getGoalsAgainst() + "," + getStats().goalsDifference() + "," +

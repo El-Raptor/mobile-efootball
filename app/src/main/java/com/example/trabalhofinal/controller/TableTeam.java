@@ -11,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 
 import com.example.trabalhofinal.R;
+import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.Team;
+import com.example.trabalhofinal.data.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +61,7 @@ public class TableTeam extends Table<Team> {
                 rows.get(i).setBackgroundColor(super.getResources().getColor(R.color.gray));
             rows.get(i).setGravity(Gravity.CENTER);
             setValues(rows.get(i), teams.get(i), numberOfColumns);
+            System.out.println("Time " + teams.get(i).getName());
             getTl().addView(rows.get(i));
         }
     }
@@ -68,6 +71,7 @@ public class TableTeam extends Table<Team> {
 
         controller = new TeamController(getContext());
         ImageView column0 = new ImageView(getContext());
+        System.out.println("path " + controller.getTeamBadge(team.getBadgePath()));
         column0.setImageDrawable(controller.getTeamBadge(team.getBadgePath()));
         column0.setScaleType(ImageView.ScaleType.CENTER);
         column0.setAdjustViewBounds(true);
@@ -78,7 +82,7 @@ public class TableTeam extends Table<Team> {
 
         List<TextView> values = new ArrayList<>();
 
-        for (int i = 1; i < numberOfColumns; i++) {
+        for (int i = 0; i < numberOfColumns-1; i++) {
             values.add(new TextView(super.getContext()));
             values.get(i).setGravity(Gravity.CENTER);
             values.get(i).setText(getValues(team.toString())[i]);

@@ -1,8 +1,10 @@
 package com.example.trabalhofinal.ui.home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -93,7 +95,7 @@ public class HomeFragment extends Fragment {
         List<Match> matches = db.getAllMatches(loggedUser);
         // TODO: otimizar o código dessa condição
         if (matches.isEmpty()) {
-            ConstraintLayout constraintLayout = root.findViewById(R.id.clHome);
+            /*ConstraintLayout constraintLayout = root.findViewById(R.id.clHome);
             ConstraintSet set = new ConstraintSet();
 
             TextView emptyList = new TextView(getContext());
@@ -107,10 +109,10 @@ public class HomeFragment extends Fragment {
             set.centerHorizontally(emptyList.getId(), constraintLayout.getId());
             set.centerVertically(emptyList.getId(), constraintLayout.getId());
 
-            set.applyTo(constraintLayout);
+            set.applyTo(constraintLayout);*/
         } else {
             TableLayout tableLayout = root.findViewById(R.id.table_matches);
-            TableMatch tableMatch = new TableMatch(getActivity(), tableLayout);
+            TableMatch tableMatch = new TableMatch(getActivity(), tableLayout, loggedUser);
             tableMatch.initTable(matches);
         }
 
@@ -185,7 +187,7 @@ public class HomeFragment extends Fragment {
         btnClose = (Button) newMatchDialog.findViewById(R.id.btnClose);
         btnAddMatch = (Button) newMatchDialog.findViewById(R.id.btnAddMatch);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter(
+        final ArrayAdapter<String> adapter = new ArrayAdapter(
                 newMatchDialog.getContext(),
                 R.layout.custom_spinner,
                 getResources().getStringArray(R.array.teams_array));
@@ -266,6 +268,8 @@ public class HomeFragment extends Fragment {
                     MatchController mc = new MatchController(penaltiesDialog.getContext());
                     mc.addMatch(addMatch, loggedUser);
                 }
+                getActivity().recreate();
+
                 newMatchDialog.dismiss();
             }
         });

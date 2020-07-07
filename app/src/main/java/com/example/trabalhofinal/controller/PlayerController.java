@@ -6,6 +6,7 @@ import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.Match;
 import com.example.trabalhofinal.data.model.Player;
 import com.example.trabalhofinal.data.model.Stats;
+import com.example.trabalhofinal.data.model.Team;
 import com.example.trabalhofinal.data.model.User;
 
 import java.util.List;
@@ -18,12 +19,19 @@ public class PlayerController {
         this.context = context;
     }
 
-    public void checkPlayer(Player player, DBHelper db, User loggedUser, Match addingMatch) {
+    public void checkPlayer(Player player, DBHelper db, User loggedUser, Match match, boolean add) {
         List<Player> playerResult = db.getPlayer(player.getName(), loggedUser);
         if (playerResult.isEmpty())
             db.addPlayer(player, loggedUser);
-        else
-            updatePlayer(playerResult.get(0), db, addingMatch, loggedUser);
+        else {
+            if (add)
+                updateAddPlayer(playerResult.get(0), db, match, loggedUser);
+            else if (player.getStats().getGamesPlayed() > 1)
+                updateRemovedPlayer(playerResult.get(0), db, match, loggedUser);
+            else
+                db.deletePlayer(playerResult.get(0), loggedUser);
+        }
+
     }
 
     public Player assemblePlayer(Match match) {
@@ -61,7 +69,7 @@ public class PlayerController {
         return player;
     }
 
-    public void updatePlayer(Player player, DBHelper db, Match addingMatch, User loggedUser) {
+    public void updateAddPlayer(Player player, DBHelper db, Match addingMatch, User loggedUser) {
         Stats newStats = new Stats();
 
         int goalsFor = addingMatch.getGoalsFor();
@@ -99,6 +107,52 @@ public class PlayerController {
 
         player.setStats(newStats);
         db.updatePlayerStats(player, loggedUser);
+    }
+
+    public void updateRemovedPlayer(Player player, DBHelper db, Match match, User loggedUser) {
+        Stats newStats = new Stats();
+
+        int goalsFor = match.getGoalsFor();
+        int goalsAgainst = match.getGoalsAgainst();
+        int penFor;
+        int penAgainst;
+        if (match.getPenaltiesGF() == null) {
+            penFor = 0;
+            penAgainst = 0;
+        } else {
+            penFor = match.getPenaltiesGF();
+            penAgainst = match.getPenaltiesGA();
+        }
+
+        int gamesPlayedUp = player.getStats().getGamesPlayed();
+        int winsUp = player.getStats().getWins();
+        int drawsUp = player.getStats().getDraws();
+        int defeatsUp = player.getStats().getDefeats();
+        int goalsForUp = player.getStats().getGoalsFor() + match.getGoalsAgainst();
+        int goalsAgainstUp = player.getStats().getGoalsAgainst() + match.getGoalsFor();
+
+        if (result(goalsAgainst, goalsFor, penAgainst, penFor) == 1)
+            winsUp--;
+        else if (result(goalsAgainst, goalsFor, penAgainst, penFor) == -1)
+            defeatsUp--;
+        else
+            drawsUp--;
+
+        newStats.setGamesPlayed(gamesPlayedUp - 1);
+        newStats.setWins(winsUp);
+        newStats.setDraws(drawsUp);
+        newStats.setDefeats(defeatsUp);
+        newStats.setGoalsFor(goalsForUp);
+        newStats.setGoalsAgainst(goalsAgainstUp);
+
+        player.setStats(newStats);
+        db.updatePlayerStats(player, loggedUser);
+    }
+
+    public void hasGame(Player oldPlayer, DBHelper db, User loggedUser) {
+        if (oldPlayer.getStats().getGamesPlayed() == 0) {
+            db.deletePlayer(oldPlayer, loggedUser);
+        }
     }
 
     private int result (int goalsFor, int goalsAgainst, int penFor, int penAgainst) {
