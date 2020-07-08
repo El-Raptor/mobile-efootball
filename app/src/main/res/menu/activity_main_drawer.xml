@@ -16,16 +16,8 @@
             android:title="@string/menu_teams" />
         <item
             android:id="@+id/nav_players"
-            android:icon="@drawable/ic_baseline_person"
+            android:icon="@drawable/ic_baseline_player"
             android:title="@string/menu_players" />
     </group>
 
-    <group
-        android:id="@+id/menu_bottom"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_baseline_exit_to_app"
-            android:title="@string/logout" />
-    </group>
 </menu>

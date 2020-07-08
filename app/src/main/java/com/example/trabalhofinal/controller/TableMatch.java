@@ -110,8 +110,6 @@ public class TableMatch extends Table<Match> {
         editDialog.setContentView(R.layout.fragment_edit_row);
         Button btnEdit = editDialog.findViewById(R.id.btnEdit);
         Button btnDelete = editDialog.findViewById(R.id.btnEdit);
-        ImageView imgClose = (ImageView) editDialog.findViewById(R.id.imgClose);
-
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,13 +121,6 @@ public class TableMatch extends Table<Match> {
         });
 
         /*btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editDialog.dismiss();
-            }
-        });*/
-
-        /*imgClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editDialog.dismiss();
