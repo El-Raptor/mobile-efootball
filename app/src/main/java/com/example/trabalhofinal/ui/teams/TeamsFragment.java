@@ -1,18 +1,12 @@
 package com.example.trabalhofinal.ui.teams;
 
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,10 +18,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.trabalhofinal.MainActivity;
 import com.example.trabalhofinal.R;
-import com.example.trabalhofinal.controller.TableMatch;
 import com.example.trabalhofinal.controller.TableTeam;
 import com.example.trabalhofinal.data.model.DBHelper;
-import com.example.trabalhofinal.data.model.LoggedInUser;
 import com.example.trabalhofinal.data.model.Team;
 import com.example.trabalhofinal.data.model.User;
 

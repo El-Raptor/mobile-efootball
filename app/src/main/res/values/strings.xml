@@ -5,45 +5,46 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="logout">Sair</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_teams">Times</string>
     <string name="menu_players">Jogadores</string>
     <string name="title_activity_login">Login</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
+
+    <string name="prompt_game">Jogo</string>
+    <string name="prompt_game_mode">Modo de Jogo</string>
+    <string name="prompt_rival">Adversário</string>
+    <string name="prompt_my_team">Seu Time</string>
+    <string name="prompt_rival_team">Time do Adversário</string>
+    <string name="prompt_password">Senha</string>
+    <string name="prompt_confirm_password">Confirmar senha</string>
+
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
+    <string name="action_logout">Sair</string>
+    <string name="action_add">Adicionar</string>
+    <string name="action_pick_date">Selecione a Data</string>
+    <string name="action_edit_user">Editar perfil</string>
+    <string name="action_register">Cadastre-se</string>
+    <string name="action_forgot_pass">Esqueceu a senha?</string>
+    <string name="action_login">Entrar</string>
+    <string name="action_is_member">Já Possui Cadastro?</string>
+    <string name="action_edit_row">Editar</string>
+    <string name="action_delete">Deletar</string>
+
+    <string name="label_penalties">Pen</string>
+    <string name="label_add_match">Nova Partida</string>
+    <string name="label_signup">Cadastro</string>
+
+    <string name="hint_email">user@email.com</string>
+    <string name="hint_username">Username</string>
+
+    <string name="message_welcome">"Bem-vindo !"</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="jogo">Jogo</string>
-    <string name="modo_de_jogo">Modo de Jogo</string>
-    <string name="adversario">Adversário</string>
-    <string name="meu_time">Seu Time</string>
-    <string name="time_adversario">Time do Adversário</string>
-    <string name="add">Adicionar</string>
-    <string name="date_pick">Selecione a Data</string>
-    <string name="edit_perfil">Editar perfil</string>
 
-    <string name="register">Cadastre-se</string>
-    <string name="signup">Cadastro</string>
-    <string name="forget_pass">Esqueceu a senha?</string>
-    <string name="login">Entrar</string>
-    <string name="email_hint">user@email.com</string>
-    <string name="password">Senha</string>
-    <string name="is_member">Já Possui Cadastro?</string>
-    <string name="username_hint">Username</string>
-    <string name="confirm_password">Confirmar senha</string>
-    <string name="new_match_tip">Nova partida</string>
-    <string name="penalties">Pen</string>
-    <string name="add_match">Nova Partida</string>
-    <string name="edit_row">Editar</string>
-    <string name="delete">Deletar</string>
+    <string name="tip_new_match">Nova partida</string>
+
     
     <string-array name="teams_array">
         <item>Aalborg BK</item>

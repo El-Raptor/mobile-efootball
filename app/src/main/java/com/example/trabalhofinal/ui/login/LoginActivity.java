@@ -8,9 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Parcelable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +18,6 @@ import com.example.trabalhofinal.MainActivity;
 import com.example.trabalhofinal.R;
 import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.User;
-import com.example.trabalhofinal.ui.home.HomeFragment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -84,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void openDialog() {
-        myDialog.setContentView(R.layout.fragment_register);
+        myDialog.setContentView(R.layout.dialog_register);
 
         edtUsernameReg = myDialog.findViewById(R.id.edtUsernameReg);
         edtEmailReg = myDialog.findViewById(R.id.edtEmailReg);

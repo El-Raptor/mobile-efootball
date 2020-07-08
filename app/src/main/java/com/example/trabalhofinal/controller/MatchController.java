@@ -24,11 +24,11 @@ public class MatchController {
         db = DBHelper.getInstance(context);
 
         TeamController tc = new TeamController(context);
-        tc.checkTeam(tc.assembleTeam(newMatch,1), db, loggedUser, newMatch, true);
-        tc.checkTeam(tc.assembleTeam(newMatch,2), db, loggedUser, newMatch, true);
+        tc.checkTeam(tc.assembleTeam(newMatch,1), db, loggedUser, true);
+        tc.checkTeam(tc.assembleTeam(newMatch,2), db, loggedUser, true);
 
         PlayerController pc = new PlayerController(context);
-        pc.checkPlayer(pc.assemblePlayer(newMatch), db, loggedUser, newMatch, true);
+        pc.checkPlayer(pc.assemblePlayer(newMatch), db, loggedUser, true);
 
         db.addMatch(newMatch, loggedUser);
 
@@ -42,22 +42,50 @@ public class MatchController {
         newMatch.setId(oldMatch.getId());
 
         TeamController tc = new TeamController(context);
-        tc.checkTeam(tc.assembleTeam(newMatch, 1), db, loggedUser, newMatch, true);
-        tc.checkTeam(tc.assembleTeam(newMatch, 2), db, loggedUser, newMatch, true);
+        Team myNewTeam = tc.assembleTeam(newMatch, 1);
+        Team rivalNewTeam = tc.assembleTeam(newMatch, 2);
+        Team myOldTeam = tc.assembleTeam(oldMatch, 1);
+        Team rivalOldTeam = tc.assembleTeam(oldMatch, 2);
+        tc.checkTeam(myNewTeam, db, loggedUser, true);
+        tc.checkTeam(rivalNewTeam, db, loggedUser, true);
 
-        tc.checkTeam(tc.assembleTeam(oldMatch, 1), db, loggedUser, oldMatch, false);
-        tc.checkTeam(tc.assembleTeam(oldMatch, 2), db, loggedUser, oldMatch, false);
+        tc.checkTeam(myOldTeam, db, loggedUser, false);
+        tc.checkTeam(rivalOldTeam, db, loggedUser, false);
 
         tc.hasGame(oldMatch.getMyTeam(), db, loggedUser);
         tc.hasGame(oldMatch.getRivalTeam(), db, loggedUser);
 
         PlayerController pc = new PlayerController(context);
-        pc.checkPlayer(pc.assemblePlayer(newMatch), db, loggedUser, newMatch, true);
-        pc.checkPlayer(pc.assemblePlayer(oldMatch), db, loggedUser, newMatch, false);
+        Player newRival = pc.assemblePlayer(newMatch);
+        Player oldRival = pc.assemblePlayer(oldMatch);
+        pc.checkPlayer(newRival, db, loggedUser, true);
+        pc.checkPlayer(oldRival, db, loggedUser, false);
 
-        pc.hasGame(pc.assemblePlayer(oldMatch), db, loggedUser);
+        pc.hasGame(oldRival, db, loggedUser);
 
         db.updateMatch(newMatch, loggedUser);
+
+        db.close();
+    }
+
+    public void deleteMatch(Match oldMatch, User loggedUser) {
+        db = DBHelper.getInstance(context);
+
+        TeamController tc = new TeamController(context);
+        Team myOldTeam = tc.assembleTeam(oldMatch, 1);
+        Team rivalOldTeam = tc.assembleTeam(oldMatch, 2);
+
+        tc.checkTeam(myOldTeam, db, loggedUser, false);
+        tc.checkTeam(rivalOldTeam, db, loggedUser, false);
+        tc.hasGame(oldMatch.getMyTeam(), db, loggedUser);
+        tc.hasGame(oldMatch.getRivalTeam(), db, loggedUser);
+
+        PlayerController pc = new PlayerController(context);
+        Player oldRival = pc.assemblePlayer(oldMatch);
+        pc.checkPlayer(oldRival, db, loggedUser, false);
+        pc.hasGame(oldRival, db, loggedUser);
+
+        db.deleteMatch(oldMatch, loggedUser);
 
         db.close();
     }

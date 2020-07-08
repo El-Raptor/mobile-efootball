@@ -38,7 +38,7 @@
         android:backgroundTint="@color/colorPrimary"
         android:clickable="true"
         android:focusable="true"
-        android:tooltipText="@string/new_match_tip"
+        android:tooltipText="@string/tip_new_match"
         android:src="@drawable/ic_baseline_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

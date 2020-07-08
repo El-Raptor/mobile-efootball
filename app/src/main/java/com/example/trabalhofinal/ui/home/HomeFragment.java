@@ -1,17 +1,9 @@
 package com.example.trabalhofinal.ui.home;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,26 +15,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.trabalhofinal.MainActivity;
 import com.example.trabalhofinal.R;
 import com.example.trabalhofinal.controller.MatchController;
-import com.example.trabalhofinal.controller.Table;
 import com.example.trabalhofinal.controller.TableMatch;
 import com.example.trabalhofinal.controller.TeamController;
 import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.Match;
-import com.example.trabalhofinal.data.model.Player;
-import com.example.trabalhofinal.data.model.Stats;
 import com.example.trabalhofinal.data.model.Team;
 import com.example.trabalhofinal.data.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -121,7 +106,7 @@ public class HomeFragment extends Fragment {
 
     private void openPenaltiesDialog(final Match match) {
         final Match penMatch = match;
-        penaltiesDialog.setContentView(R.layout.fragment_penalties);
+        penaltiesDialog.setContentView(R.layout.dialog_penalties);
         Button btnNoPenalties = (Button) penaltiesDialog.findViewById(R.id.btnNoPenalties);
         Button btnPenalties = (Button) penaltiesDialog.findViewById(R.id.btnPenalties);
         final EditText edtGoalsForPen = (EditText) penaltiesDialog.findViewById(R.id.edtGoalsForPen);
@@ -172,7 +157,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void openDialog() {
-        newMatchDialog.setContentView(R.layout.fragment_add_match);
+        newMatchDialog.setContentView(R.layout.dialog_add_match);
         Button btnClose;
         Button btnAddMatch;
         edtDate = (EditText) newMatchDialog.findViewById(R.id.edtDate);

@@ -770,4 +770,19 @@ public class DBHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    public void deleteMatch(Match match, User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.delete(TABLE_MATCH,
+                    COLUMN_MATCHID + " = ? AND " + COLUMN_USER_FK + " = ?"
+                    , new String[]{String.valueOf(match.getId()), user.getEmail()});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d("TAG", "Error while trying to delete a player");
+        } finally {
+            db.endTransaction();
+        }
+    }
 }

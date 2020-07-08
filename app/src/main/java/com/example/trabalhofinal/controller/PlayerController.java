@@ -19,15 +19,15 @@ public class PlayerController {
         this.context = context;
     }
 
-    public void checkPlayer(Player player, DBHelper db, User loggedUser, Match match, boolean add) {
+    public void checkPlayer(Player player, DBHelper db, User loggedUser, boolean add) {
         List<Player> playerResult = db.getPlayer(player.getName(), loggedUser);
         if (playerResult.isEmpty())
             db.addPlayer(player, loggedUser);
         else {
             if (add)
-                updateAddPlayer(playerResult.get(0), db, match, loggedUser);
+                updateAddPlayer(playerResult.get(0), db, player, loggedUser);
             else if (player.getStats().getGamesPlayed() > 1)
-                updateRemovedPlayer(playerResult.get(0), db, match, loggedUser);
+                updateRemovedPlayer(playerResult.get(0), db, player, loggedUser);
             else
                 db.deletePlayer(playerResult.get(0), loggedUser);
         }
@@ -69,34 +69,23 @@ public class PlayerController {
         return player;
     }
 
-    public void updateAddPlayer(Player player, DBHelper db, Match addingMatch, User loggedUser) {
+    public void updateAddPlayer(Player playerToUpdate, DBHelper db, Player player, User loggedUser) {
         Stats newStats = new Stats();
 
-        int goalsFor = addingMatch.getGoalsFor();
-        int goalsAgainst = addingMatch.getGoalsAgainst();
-        int penFor;
-        int penAgainst;
-        if (addingMatch.getPenaltiesGF() == null) {
-            penFor = 0;
-            penAgainst = 0;
-        } else {
-            penFor = addingMatch.getPenaltiesGF();
-            penAgainst = addingMatch.getPenaltiesGA();
-        }
+        // Variáveis do time a atualizar.
+        int goalsFor = player.getStats().getGoalsFor();
+        int goalsAgainst = player.getStats().getGoalsAgainst();
+        int wins = player.getStats().getWins();
+        int draws = player.getStats().getDraws();
+        int defeats = player.getStats().getDefeats();
 
-        int gamesPlayedUp = player.getStats().getGamesPlayed();
-        int winsUp = player.getStats().getWins();
-        int drawsUp = player.getStats().getDraws();
-        int defeatsUp = player.getStats().getDefeats();
-        int goalsForUp = player.getStats().getGoalsFor() + addingMatch.getGoalsAgainst();
-        int goalsAgainstUp = player.getStats().getGoalsAgainst() + addingMatch.getGoalsFor();
-
-        if (result(goalsAgainst, goalsFor, penAgainst, penFor) == 1)
-            winsUp++;
-        else if (result(goalsAgainst, goalsFor, penAgainst, penFor) == -1)
-            defeatsUp++;
-        else
-            drawsUp++;
+        // Variáveis de atualização do time.
+        int gamesPlayedUp = playerToUpdate.getStats().getGamesPlayed();
+        int goalsForUp = playerToUpdate.getStats().getGoalsFor() + goalsFor;
+        int goalsAgainstUp = playerToUpdate.getStats().getGoalsAgainst() + goalsAgainst;
+        int winsUp = playerToUpdate.getStats().getWins() + wins;
+        int drawsUp = playerToUpdate.getStats().getDraws() + draws;
+        int defeatsUp = playerToUpdate.getStats().getDefeats() + defeats;
 
         newStats.setGamesPlayed(gamesPlayedUp + 1);
         newStats.setWins(winsUp);
@@ -105,38 +94,27 @@ public class PlayerController {
         newStats.setGoalsFor(goalsForUp);
         newStats.setGoalsAgainst(goalsAgainstUp);
 
-        player.setStats(newStats);
-        db.updatePlayerStats(player, loggedUser);
+        playerToUpdate.setStats(newStats);
+        db.updatePlayerStats(playerToUpdate, loggedUser);
     }
 
-    public void updateRemovedPlayer(Player player, DBHelper db, Match match, User loggedUser) {
+    public void updateRemovedPlayer(Player playerToUpdate, DBHelper db, Player player, User loggedUser) {
         Stats newStats = new Stats();
 
-        int goalsFor = match.getGoalsFor();
-        int goalsAgainst = match.getGoalsAgainst();
-        int penFor;
-        int penAgainst;
-        if (match.getPenaltiesGF() == null) {
-            penFor = 0;
-            penAgainst = 0;
-        } else {
-            penFor = match.getPenaltiesGF();
-            penAgainst = match.getPenaltiesGA();
-        }
+        // Variáveis do time a atualizar.
+        int goalsFor = player.getStats().getGoalsFor();
+        int goalsAgainst = player.getStats().getGoalsAgainst();
+        int wins = player.getStats().getWins();
+        int draws = player.getStats().getDraws();
+        int defeats = player.getStats().getDefeats();
 
-        int gamesPlayedUp = player.getStats().getGamesPlayed();
-        int winsUp = player.getStats().getWins();
-        int drawsUp = player.getStats().getDraws();
-        int defeatsUp = player.getStats().getDefeats();
-        int goalsForUp = player.getStats().getGoalsFor() + match.getGoalsAgainst();
-        int goalsAgainstUp = player.getStats().getGoalsAgainst() + match.getGoalsFor();
-
-        if (result(goalsAgainst, goalsFor, penAgainst, penFor) == 1)
-            winsUp--;
-        else if (result(goalsAgainst, goalsFor, penAgainst, penFor) == -1)
-            defeatsUp--;
-        else
-            drawsUp--;
+        // Variáveis de atualização do time.
+        int gamesPlayedUp = playerToUpdate.getStats().getGamesPlayed();
+        int goalsForUp = playerToUpdate.getStats().getGoalsFor() - goalsFor;
+        int goalsAgainstUp = playerToUpdate.getStats().getGoalsAgainst() - goalsAgainst;
+        int winsUp = playerToUpdate.getStats().getWins() - wins;
+        int drawsUp = playerToUpdate.getStats().getDraws() - draws;
+        int defeatsUp = playerToUpdate.getStats().getDefeats() - defeats;
 
         newStats.setGamesPlayed(gamesPlayedUp - 1);
         newStats.setWins(winsUp);
@@ -145,8 +123,8 @@ public class PlayerController {
         newStats.setGoalsFor(goalsForUp);
         newStats.setGoalsAgainst(goalsAgainstUp);
 
-        player.setStats(newStats);
-        db.updatePlayerStats(player, loggedUser);
+        playerToUpdate.setStats(newStats);
+        db.updatePlayerStats(playerToUpdate, loggedUser);
     }
 
     public void hasGame(Player oldPlayer, DBHelper db, User loggedUser) {

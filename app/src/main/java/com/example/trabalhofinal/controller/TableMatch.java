@@ -1,14 +1,10 @@
 package com.example.trabalhofinal.controller;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,16 +19,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.trabalhofinal.R;
 import com.example.trabalhofinal.data.model.DBHelper;
 import com.example.trabalhofinal.data.model.Match;
 import com.example.trabalhofinal.data.model.Team;
 import com.example.trabalhofinal.data.model.User;
-
-import org.w3c.dom.Text;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -107,9 +99,9 @@ public class TableMatch extends Table<Match> {
     }
 
     private void openDialog(final int id) {
-        editDialog.setContentView(R.layout.fragment_edit_row);
+        editDialog.setContentView(R.layout.dialog_edit_row);
         Button btnEdit = editDialog.findViewById(R.id.btnEdit);
-        Button btnDelete = editDialog.findViewById(R.id.btnEdit);
+        Button btnDelete = editDialog.findViewById(R.id.edtDelete);
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +112,18 @@ public class TableMatch extends Table<Match> {
             }
         });
 
-        /*btnDelete.setOnClickListener(new View.OnClickListener() {
+        btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MatchController mc = new MatchController(getContext());
+                DBHelper db = DBHelper.getInstance(getContext());
+                Match delMatch = db.getMatch(loggedUser, id).get(0);
+                mc.deleteMatch(delMatch, loggedUser);
+                Activity activity = (Activity) getContext();
+                activity.recreate();
                 editDialog.dismiss();
             }
-        });*/
+        });
 
         editDialog.show();
     }
@@ -166,7 +164,8 @@ public class TableMatch extends Table<Match> {
     }
 
     private void openDialog(final User loggedUser, final int id) {
-        newMatchDialog.setContentView(R.layout.fragment_add_match);
+        newMatchDialog.setContentView(R.layout.dialog_add_match);
+        TextView tvAddMatch = (TextView) newMatchDialog.findViewById(R.id.tvAddMatch);
         Button btnClose = (Button) newMatchDialog.findViewById(R.id.btnClose);
         Button btnAddMatch = (Button) newMatchDialog.findViewById(R.id.btnAddMatch);
         edtDate = (EditText) newMatchDialog.findViewById(R.id.edtDate);
@@ -182,6 +181,8 @@ public class TableMatch extends Table<Match> {
         imgAwayTeam = (ImageView) newMatchDialog.findViewById(R.id.imgAwayTeam);
         btnClose = (Button) newMatchDialog.findViewById(R.id.btnClose);
         btnAddMatch = (Button) newMatchDialog.findViewById(R.id.btnAddMatch);
+
+        tvAddMatch.setText("Editar Partida");
 
         ArrayAdapter<String> adapter = new ArrayAdapter(
                 newMatchDialog.getContext(),
@@ -269,6 +270,7 @@ public class TableMatch extends Table<Match> {
                     Activity activity = (Activity) getContext();
                     activity.recreate();
                 }
+                db.close();
                 newMatchDialog.dismiss();
             }
         });
@@ -278,7 +280,7 @@ public class TableMatch extends Table<Match> {
 
     private void openPenaltiesDialog(final Match match, Match oldMatch) {
         final Match penMatch = match;
-        penaltiesDialog.setContentView(R.layout.fragment_penalties);
+        penaltiesDialog.setContentView(R.layout.dialog_penalties);
         Button btnNoPenalties = (Button) penaltiesDialog.findViewById(R.id.btnNoPenalties);
         Button btnPenalties = (Button) penaltiesDialog.findViewById(R.id.btnPenalties);
         final EditText edtGoalsForPen = (EditText) penaltiesDialog.findViewById(R.id.edtGoalsForPen);
