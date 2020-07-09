@@ -31,6 +31,7 @@
     <string name="action_is_member">Já Possui Cadastro?</string>
     <string name="action_edit_row">Editar</string>
     <string name="action_delete">Deletar</string>
+    <string name="action_confirm">Confirmar</string>
 
     <string name="label_penalties">Pen</string>
     <string name="label_add_match">Nova Partida</string>
@@ -38,19 +39,23 @@
     <string name="label_no_found_team">Nenhum time encontrado</string>
     <string name="label_no_found_match">Nenhuma partida encontrada</string>
     <string name="label_no_found_player">Nenhum jogador encontrado</string>
+    <string name="label_new_password">Nova Senha</string>
+    <string name="label_edit_user">Nome de Usuário</string>
 
     <string name="hint_email">user@email.com</string>
     <string name="hint_username">Username</string>
 
     <string name="message_welcome">"Bem-vindo "</string>
     <string name="message_invalid_email">E-mail inválido!</string>
-    <string name="message_invalid_password">Senhar incorreta!</string>
+    <string name="message_invalid_password">Senha incorreta!</string>
     <string name="message_null_values">Preencha todos os campos.</string>
     <string name="message_passwords_not_matching">Senhas não combinam.</string>
     <string name="message_email_already_registered">Email já cadastrado.</string>
     <string name="message_register_success">Conta cadastrada com sucesso!</string>
     <string name="message_match_added">Partida adicionada com sucesso!</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="message_invalid_password_2">Senha deve ser diferente da sua antiga senha.</string>
+    <string name="message_password_changed">Senha alterada com sucesso!</string>
+    <string name="message_username_changed">Nome de usuário alterado!</string>
     <string name="login_failed">"Login failed"</string>
 
     <string name="tip_new_match">Nova partida</string>

@@ -27,12 +27,12 @@ import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button btnLogin, btnRegister;
-    private EditText edtUsername, edtPassword;
+    private Button btnLogin, btnRegister, btnConfirmNewPassword, btnBack;
+    private EditText edtUsername, edtPassword, edtConfirmEmail, edtNewPass, edtConfirmNewPass;
     private EditText edtEmailReg, edtUsernameReg, edtPasswordReg, edtConfirmPassword;
     private DBHelper db;
-    private Dialog myDialog;
-    private TextView tvRegister, tvIsMember;
+    private Dialog registerDialog, forgotPassDialog;
+    private TextView tvRegister, tvIsMember, tvForgotPassword;
     private User newUser;
     private final String NEGATIVE = "Negative";
     private final String POSITIVE = "Positive";
@@ -48,7 +48,9 @@ public class LoginActivity extends AppCompatActivity {
         edtUsername = (EditText) findViewById(R.id.edtUserName);
         edtPassword = (EditText) findViewById(R.id.edtPasswordReg);
         tvRegister = (TextView) findViewById(R.id.tvRegister);
-        myDialog = new Dialog(this);
+        tvForgotPassword = (TextView) findViewById(R.id.tvForgotPass);
+        registerDialog = new Dialog(this);
+        forgotPassDialog = new Dialog(this);
 
         // Botão de Entrar.
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -65,30 +67,91 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDialog();
             }
         });
+
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogForgotPassword();
+            }
+        });
+    }
+
+    private void dialogForgotPassword() {
+        forgotPassDialog.setContentView(R.layout.dialog_forgot_password);
+
+        edtNewPass = forgotPassDialog.findViewById(R.id.edtNewPass);
+        edtConfirmNewPass = forgotPassDialog.findViewById(R.id.edtConfirmNewPass);
+        edtConfirmEmail = forgotPassDialog.findViewById(R.id.edtConfirmEmail);
+        btnConfirmNewPassword = forgotPassDialog.findViewById(R.id.btnConfirmNewPassword);
+        btnBack = forgotPassDialog.findViewById(R.id.btnBack);
+
+        btnConfirmNewPassword.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onClick(View v) {
+                String email = edtConfirmEmail.getText().toString();
+                String pass = edtNewPass.getText().toString();
+                String confirmNewPass = edtConfirmNewPass.getText().toString();
+
+                final String PASSWORD_NOT_MATCHING = getResources()
+                        .getString(R.string.message_passwords_not_matching);
+                final String NULL_VALUES = getResources().getString(R.string.message_null_values);
+                final String PASSWORD_CHANGED = getResources()
+                        .getString(R.string.message_password_changed);
+                final String INVALID_EMAIL = getResources().getString(R.string.message_invalid_email);
+                final String INVALID_PASS = getResources().getString(R.string.message_invalid_password_2);
+
+                User user = new User(pass, email);
+
+                if (checkForEmptyValues(pass) ||
+                        checkForEmptyValues(email))
+                    createToast(NULL_VALUES, NEGATIVE);
+
+                else if (!pass.equals(confirmNewPass))
+                    createToast(PASSWORD_NOT_MATCHING, NEGATIVE);
+                else if (!haveEmail(user))
+                    createToast(INVALID_EMAIL, NEGATIVE);
+                else if (checkUser(user))
+                    createToast(INVALID_PASS, NEGATIVE);
+                else {
+                    changePassword(user);
+                    createToast(PASSWORD_CHANGED, POSITIVE);
+                    forgotPassDialog.dismiss();
+                }
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forgotPassDialog.dismiss();
+            }
+        });
+
+        forgotPassDialog.show();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void openDialog() {
-        myDialog.setContentView(R.layout.dialog_register);
+        registerDialog.setContentView(R.layout.dialog_register);
 
-        edtUsernameReg = myDialog.findViewById(R.id.edtUsernameReg);
-        edtEmailReg = myDialog.findViewById(R.id.edtEmailReg);
-        edtPasswordReg = myDialog.findViewById(R.id.edtPasswordReg);
-        edtConfirmPassword = myDialog.findViewById(R.id.edtConfirmPass);
-        btnRegister = myDialog.findViewById(R.id.btnRegister);
-        tvIsMember = myDialog.findViewById(R.id.tvIsMember);
+        edtUsernameReg = registerDialog.findViewById(R.id.edtUsernameReg);
+        edtEmailReg = registerDialog.findViewById(R.id.edtEmailReg);
+        edtPasswordReg = registerDialog.findViewById(R.id.edtPasswordReg);
+        edtConfirmPassword = registerDialog.findViewById(R.id.edtConfirmPass);
+        btnRegister = registerDialog.findViewById(R.id.btnRegister);
+        tvIsMember = registerDialog.findViewById(R.id.tvIsMember);
 
         tvIsMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myDialog.dismiss();
+                registerDialog.dismiss();
             }
         });
 
@@ -126,12 +189,12 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     addUser(newUser);
                     createToast(REGISTER_SUCCESS, POSITIVE);
-                    myDialog.dismiss();
+                    registerDialog.dismiss();
                 }
             }
         });
 
-        myDialog.show();
+        registerDialog.show();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -161,9 +224,6 @@ public class LoginActivity extends AppCompatActivity {
 
         User userDB = db.getUser(user).get(0);
 
-        System.out.println(userDB.getPassword());
-        System.out.println(user.getPassword());
-
         return userDB.getPassword().equals(user.getPassword());
     }
 
@@ -176,9 +236,6 @@ public class LoginActivity extends AppCompatActivity {
         db = DBHelper.getInstance(getApplicationContext());
         List<User> users = db.getUser(user);
         db.close();
-
-        for (User u : users)
-            System.out.println("Have Email " + u.getEmail());
 
         return !users.isEmpty();
     }
@@ -208,6 +265,12 @@ public class LoginActivity extends AppCompatActivity {
         db = DBHelper.getInstance(getApplicationContext());
         db.addUser(user);
         System.out.println("Add " + user.getEmail());
+        db.close();
+    }
+
+    private void changePassword(User user) {
+        db = DBHelper.getInstance(getApplicationContext());
+        db.updateUserPassword(user);
         db.close();
     }
 

@@ -740,6 +740,26 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] {String.valueOf(player.getName()), String.valueOf(user.getEmail())});
     }
 
+    public int updateUserPassword(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COlUMN_PASSWORD, user.getPassword());
+
+        return db.update(TABLE_USER, values, COLUMN_EMAIL + " = ?",
+                new String[] {user.getEmail()});
+    }
+
+    public int updateUsername(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_NAME, user.getUsername());
+
+        return db.update(TABLE_USER, values, COLUMN_EMAIL + " = ?",
+                new String[] {user.getEmail()});
+    }
+
 
     public void deleteTeam(Team team, User user) {
         SQLiteDatabase db = getWritableDatabase();
