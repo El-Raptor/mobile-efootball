@@ -29,7 +29,7 @@
         android:adjustViewBounds="true"
         android:maxWidth="48px"
         android:maxHeight="48px"
-        android:src="@drawable/ic_team"
+        android:src="@drawable/ic_no_team"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -42,7 +42,7 @@
         android:adjustViewBounds="true"
         android:maxWidth="48px"
         android:maxHeight="48px"
-        android:src="@drawable/ic_team"
+        android:src="@drawable/ic_no_team"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -94,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:background="@drawable/button_cancel"
+        android:background="@drawable/btn_cancel"
         android:paddingLeft="7dp"
         android:paddingRight="7dp"
         android:text="Não Houve Pênaltis"
@@ -109,7 +109,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="40dp"
-        android:background="@drawable/button_add_team"
+        android:background="@drawable/btn_add_team"
         android:drawableTop="@drawable/ic_baseline_check"
         android:onClick="addMatch"
         android:paddingTop="6.5dp"

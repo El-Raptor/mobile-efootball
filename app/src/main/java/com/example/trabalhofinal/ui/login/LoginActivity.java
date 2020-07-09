@@ -8,7 +8,10 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +34,9 @@ public class LoginActivity extends AppCompatActivity {
     private Dialog myDialog;
     private TextView tvRegister, tvIsMember;
     private User newUser;
+    private final String NEGATIVE = "Negative";
+    private final String POSITIVE = "Positive";
+    private final String INFO = "Info";
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -49,13 +55,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 User user = createUser();
-                String noEmail = "Email incorreto.";
+                final String NO_EMAIL = getResources().getString(R.string.message_invalid_email);
                 if (!haveEmail(user)) {
-                    System.out.println(edtUsername.getText().toString());
-                    System.out.println(edtPassword.getText().toString());
-                    System.out.println(user.getEmail());
-                    Toast.makeText(getApplicationContext(), noEmail,
-                            Toast.LENGTH_SHORT).show();
+                    createToast(NO_EMAIL, NEGATIVE);
                 }
                 else {
                     logIn(user);
@@ -71,12 +73,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-    /*private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void openDialog() {
@@ -106,37 +102,30 @@ public class LoginActivity extends AppCompatActivity {
 
                 newUser = new User(username, pass, email);
 
-                String differentPass = "Senhas não combinam.";
-                String emailAlreadyRegistered = "Email já cadastrado.";
-                String registerSuccess = "Conta cadastrada com sucesso!";
-                String nullValues = "Preencha todos os campos.";
+                final String PASSWORD_NOT_MATCHING = getResources()
+                        .getString(R.string.message_passwords_not_matching);
+                final String EMAIL_ALREADY_REGISTERED = getResources()
+                        .getString(R.string.message_email_already_registered);
+                final String REGISTER_SUCCESS = getResources()
+                        .getString(R.string.message_register_success);
+                final String NULL_VALUES = getResources().getString(R.string.message_null_values);
 
                 String password = edtPasswordReg.getText().toString();
                 String confirmPassword = edtConfirmPassword.getText().toString();
 
-                System.out.println(password);
-                System.out.println(confirmPassword);
-                System.out.println(edtEmailReg.getText().toString());
-                System.out.println(edtPasswordReg.getText().toString());
-                System.out.println("new user " + newUser.getEmail());
-
-
                 if (checkForEmptyValues(edtPasswordReg.getText().toString()) ||
                         checkForEmptyValues(edtEmailReg.getText().toString()) ||
                         checkForEmptyValues(edtUsernameReg.getText().toString()))
-                Toast.makeText(
-                        getApplicationContext(), nullValues, Toast.LENGTH_SHORT).show();
-                else if (!password.equals(confirmPassword)) {
-                    Toast.makeText(
-                            getApplicationContext(), differentPass, Toast.LENGTH_SHORT).show();
-                }
+                    createToast(NULL_VALUES, NEGATIVE);
+
+                else if (!password.equals(confirmPassword))
+                    createToast(PASSWORD_NOT_MATCHING, NEGATIVE);
+
                 else if (haveEmail(newUser))
-                    Toast.makeText(getApplicationContext(), emailAlreadyRegistered,
-                            Toast.LENGTH_SHORT).show();
+                    createToast(EMAIL_ALREADY_REGISTERED, NEGATIVE);
                 else {
                     addUser(newUser);
-                    Toast.makeText(
-                            getApplicationContext(), registerSuccess, Toast.LENGTH_SHORT).show();
+                    createToast(REGISTER_SUCCESS, POSITIVE);
                     myDialog.dismiss();
                 }
             }
@@ -152,19 +141,17 @@ public class LoginActivity extends AppCompatActivity {
         User verifyingUser = db.getUser(user).get(0);
 
         if (checkUser(user)) {
-            Toast.makeText(
-                    getApplicationContext(), "Bem-vindo " + verifyingUser.getUsername(),
-                    Toast.LENGTH_SHORT).show();
+            final String WELCOME = getResources().getString(R.string.message_welcome);
+            createToast(WELCOME, INFO + user.getUsername() + "!");
             Intent it = new Intent(this, MainActivity.class);
             it.putExtra("user", (Serializable) verifyingUser);
             startActivity(it);
             finish();
 
-        } else
-            Toast.makeText(
-                    getApplicationContext(), "Senha incorreta.",
-                    Toast.LENGTH_SHORT).show();
-
+        } else {
+            final String INVALID_PASSWORD = getResources().getString(R.string.message_invalid_password);
+            createToast(INVALID_PASSWORD, NEGATIVE);
+        }
         db.close();
 
     }
@@ -173,7 +160,6 @@ public class LoginActivity extends AppCompatActivity {
     private boolean checkUser(User user) {
 
         User userDB = db.getUser(user).get(0);
-
 
         System.out.println(userDB.getPassword());
         System.out.println(user.getPassword());
@@ -224,8 +210,33 @@ public class LoginActivity extends AppCompatActivity {
         System.out.println("Add " + user.getEmail());
         db.close();
     }
-    /*private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }*/
+
+    public void createToast(String text, String toastType) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = null;
+        if (toastType.equals("Negative")) {
+            layout = inflater.inflate(R.layout.custom_negative_toast,
+                    (ViewGroup) findViewById(R.id.custom_negative_toast_container));
+            TextView textMsg = layout.findViewById(R.id.tvNegativeToast);
+            textMsg.setText(text);
+
+        } else if (toastType.equals("Positive")) {
+            layout = inflater.inflate(R.layout.custom_positive_toast,
+                    (ViewGroup) findViewById(R.id.custom_positive_toast_container));
+            TextView textMsg = layout.findViewById(R.id.tvPositiveToast);
+            textMsg.setText(text);
+        } else {
+            layout = inflater.inflate(R.layout.custom_info_toast,
+                    (ViewGroup) findViewById(R.id.custom_info_toast_container));
+            TextView textMsg = layout.findViewById(R.id.tvInfoToast);
+            textMsg.setText(text);
+        }
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.BOTTOM, 0, 10);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
 
 }

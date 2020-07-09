@@ -70,7 +70,7 @@
         android:layout_marginTop="50dp"
         android:text="@string/action_login"
         android:textColor="@color/white"
-        android:background="@drawable/button_login"
+        android:background="@drawable/btn_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

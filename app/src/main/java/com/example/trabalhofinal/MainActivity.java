@@ -33,9 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private User loggedUser;
     private TextView emailHeader, usernameHeader;
-    private HomeFragment homeFragment;
-    private PlayersFragment playersFragment;
-    private TeamsFragment teamsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         loggedUser = (User) getIntent().getSerializableExtra("user");
-
 
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -59,35 +55,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        homeFragment = new HomeFragment();
-        playersFragment = new PlayersFragment();
-        teamsFragment = new TeamsFragment();
-
-        /*navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                int id = item.getItemId();
-
-                if (id == R.id.nav_logout)
-                    logOut();
-                else if (id == R.id.nav_home) {
-                    //((FrameLayout) findViewById(R.id.nav_host_container)).removeAllViews();
-                    setFragment(homeFragment);
-                    drawer.closeDrawers();
-                } else if (id == R.id.nav_players) {
-                    //((FrameLayout) findViewById(R.id.nav_host_container)).removeAllViews();
-                    setFragment(playersFragment);
-                    drawer.closeDrawers();
-                } else if (id == R.id.nav_team) {
-                    //((FrameLayout) findViewById(R.id.nav_host_container)).removeAllViews();
-                    setFragment(teamsFragment);
-                    drawer.closeDrawers();
-                }
-
-                return true;
-            }
-        });*/
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -2,8 +2,11 @@ package com.example.trabalhofinal.ui.home;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -33,27 +38,28 @@ import com.example.trabalhofinal.data.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
     private DBHelper db;
     private View root;
     private Dialog newMatchDialog, penaltiesDialog;
     private DatePickerDialog dpd;
     private EditText edtDate, edtGame, edtGameMode, edtRival, edtGoalsFor, edtGoalsAgainst;
     private User loggedUser;
+    private TextView tvNoMatch;
     private Spinner spHomeTeam, spAwayTeam;
-    private ImageView imgAwayTeam, imgHomeTeam;
-
+    private ImageView imgAwayTeam, imgHomeTeam, imgNoMatch;
+    private final String POSITIVE = "Positive";
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+
         root = inflater.inflate(R.layout.fragment_home, container, false);
 
         loggedUser = ((MainActivity)getActivity()).getLoggedUser();
@@ -62,6 +68,7 @@ public class HomeFragment extends Fragment {
 
         newMatchDialog = new Dialog(getContext());
         penaltiesDialog = new Dialog(getContext());
+
         FloatingActionButton fab = root.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,21 +87,10 @@ public class HomeFragment extends Fragment {
         List<Match> matches = db.getAllMatches(loggedUser);
         // TODO: otimizar o código dessa condição
         if (matches.isEmpty()) {
-            /*ConstraintLayout constraintLayout = root.findViewById(R.id.clHome);
-            ConstraintSet set = new ConstraintSet();
-
-            TextView emptyList = new TextView(getContext());
-            emptyList.setText("Nenhuma partida encontrada!");
-            emptyList.setId(View.generateViewId());
-            emptyList.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-            constraintLayout.addView(emptyList, 0);
-
-            set.clone(constraintLayout);
-            // Adicionando as constraints layouts para o novo TextView.
-            set.centerHorizontally(emptyList.getId(), constraintLayout.getId());
-            set.centerVertically(emptyList.getId(), constraintLayout.getId());
-
-            set.applyTo(constraintLayout);*/
+            tvNoMatch = root.findViewById(R.id.tvNoMatch);
+            imgNoMatch = root.findViewById(R.id.imgNoMatch);
+            imgNoMatch.setImageDrawable(getDrawable("ic_no_match"));
+            tvNoMatch.setText(getResources().getString(R.string.label_no_found_match));
         } else {
             TableLayout tableLayout = root.findViewById(R.id.table_matches);
             TableMatch tableMatch = new TableMatch(getActivity(), tableLayout, loggedUser);
@@ -126,9 +122,11 @@ public class HomeFragment extends Fragment {
         awayTeam.setBadgePath();
         imgAwayTeam.setImageDrawable(tc.getTeamBadge(awayTeam.getBadgePath()));
 
+        final String MATCH_ADDED = getResources().getString(R.string.message_match_added);
         btnPenalties.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Integer penGF = Integer.parseInt(edtGoalsForPen.getText().toString());
                 Integer penGA = Integer.parseInt(edtGoalsAgainstPen.getText().toString());
                 if ((penGF != 0 || penGF != null) && (penGA != 0 || penGA != null)) {
@@ -138,6 +136,7 @@ public class HomeFragment extends Fragment {
                 }
                 MatchController mc = new MatchController(penaltiesDialog.getContext());
                 mc.addMatch(penMatch, loggedUser);
+                createToast(MATCH_ADDED, POSITIVE);
                 penaltiesDialog.dismiss();
                 getActivity().recreate();
             }
@@ -148,6 +147,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 MatchController mc = new MatchController(penaltiesDialog.getContext());
                 mc.addMatch(penMatch, loggedUser);
+                createToast(MATCH_ADDED, POSITIVE);
                 penaltiesDialog.dismiss();
                 getActivity().recreate();
             }
@@ -184,6 +184,8 @@ public class HomeFragment extends Fragment {
         spHomeTeam.setAdapter(adapter);
         spAwayTeam.setAdapter(adapter);
 
+        edtDate.setText(currentDate());
+
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,7 +199,7 @@ public class HomeFragment extends Fragment {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         edtDate.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
                     }
-                }, day, month, year);
+                }, year, month, day);
                 dpd.show();
             }
         });
@@ -245,8 +247,8 @@ public class HomeFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onClick(View v) {
+                final String MATCH_ADDED = getResources().getString(R.string.message_match_added);
                 Match addMatch = assembleMatch();
-                System.out.println("On click " + addMatch.getMyTeam());
                 Integer goalsFor = Integer.parseInt(edtGoalsFor.getText().toString());
                 Integer goalsAgainst = Integer.parseInt(edtGoalsAgainst.getText().toString());
                 if (goalsFor == goalsAgainst)
@@ -254,6 +256,7 @@ public class HomeFragment extends Fragment {
                 else {
                     MatchController mc = new MatchController(penaltiesDialog.getContext());
                     mc.addMatch(addMatch, loggedUser);
+                    createToast(MATCH_ADDED, POSITIVE);
                     getActivity().recreate();
                 }
 
@@ -279,10 +282,49 @@ public class HomeFragment extends Fragment {
         match.setGoalsFor(Integer.parseInt(edtGoalsFor.getText().toString()));
         match.setGoalsAgainst(Integer.parseInt(edtGoalsAgainst.getText().toString()));
 
-        System.out.println("Assemble " + match.getGoalsFor());
-
         return match;
     }
 
+    public void createToast(String text, String toastType) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = null;
+        if (toastType.equals("Negative")) {
+            layout = inflater.inflate(R.layout.custom_negative_toast,
+                    (ViewGroup) root.findViewById(R.id.custom_negative_toast_container));
+            TextView textMsg = layout.findViewById(R.id.tvNegativeToast);
+            textMsg.setText(text);
+
+        } else if (toastType.equals("Positive")) {
+            layout = inflater.inflate(R.layout.custom_positive_toast,
+                    (ViewGroup) root.findViewById(R.id.custom_positive_toast_container));
+            TextView textMsg = layout.findViewById(R.id.tvPositiveToast);
+            textMsg.setText(text);
+        } else {
+            layout = inflater.inflate(R.layout.custom_info_toast,
+                    (ViewGroup) root.findViewById(R.id.custom_info_toast_container));
+            TextView textMsg = layout.findViewById(R.id.tvInfoToast);
+            textMsg.setText(text);
+        }
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.BOTTOM, 0, 10);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    private String currentDate() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 0);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(calendar.getTime());
+    }
+
+    private Drawable getDrawable(String drawableName) {
+        Resources res = getResources();
+        int resId = res.getIdentifier(drawableName, "drawable", getContext().getPackageName());
+        Drawable drawable = res.getDrawable(resId);
+        return drawable;
+    }
 
 }
