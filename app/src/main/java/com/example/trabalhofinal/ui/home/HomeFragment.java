@@ -173,6 +173,7 @@ public class HomeFragment extends Fragment {
         imgAwayTeam = (ImageView) newMatchDialog.findViewById(R.id.imgAwayTeam);
         btnClose = (Button) newMatchDialog.findViewById(R.id.btnClose);
         btnAddMatch = (Button) newMatchDialog.findViewById(R.id.btnAddMatch);
+        final TextView tvWarning = newMatchDialog.findViewById(R.id.tvWarning);
 
         final ArrayAdapter<String> adapter = new ArrayAdapter(
                 newMatchDialog.getContext(),
@@ -185,6 +186,14 @@ public class HomeFragment extends Fragment {
         spAwayTeam.setAdapter(adapter);
 
         edtDate.setText(currentDate());
+        edtDate.setFocusable(false);
+
+        edtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvWarning.setText(getResources().getString(R.string.message_warning));
+            }
+        });
 
         btnDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +209,8 @@ public class HomeFragment extends Fragment {
                         edtDate.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
                     }
                 }, year, month, day);
+
+                tvWarning.setText("");
                 dpd.show();
             }
         });

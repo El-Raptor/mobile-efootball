@@ -21,12 +21,13 @@
         android:layout_height="80dp"
         android:layout_marginTop="40dp"
         android:adjustViewBounds="true"
-        android:maxWidth="48px"
-        android:maxHeight="48px"
+        android:maxWidth="48dp"
+        android:maxHeight="48dp"
         android:src="@drawable/ic_no_team"
         app:layout_constraintEnd_toEndOf="@+id/spHomeTeam"
         app:layout_constraintStart_toStartOf="@+id/spHomeTeam"
-        app:layout_constraintTop_toBottomOf="@+id/edtRival" />
+        app:layout_constraintTop_toBottomOf="@+id/edtRival"
+        android:contentDescription="@string/content_description_home_team" />
 
     <ImageView
         android:id="@+id/imgAwayTeam"
@@ -34,12 +35,13 @@
         android:layout_height="80dp"
         android:layout_marginTop="40dp"
         android:adjustViewBounds="true"
-        android:maxWidth="48px"
-        android:maxHeight="48px"
+        android:maxWidth="48dp"
+        android:maxHeight="48dp"
         android:src="@drawable/ic_no_team"
         app:layout_constraintEnd_toEndOf="@+id/spAwayTeam"
         app:layout_constraintStart_toStartOf="@+id/spAwayTeam"
-        app:layout_constraintTop_toBottomOf="@+id/edtRival" />
+        app:layout_constraintTop_toBottomOf="@+id/edtRival"
+        android:contentDescription="@string/content_description_away_tema" />
 
     <EditText
         android:id="@+id/edtDate"
@@ -50,14 +52,13 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/edit_data"
         android:elevation="5dp"
-        android:hint="@string/action_pick_date"
         android:inputType="date"
         android:padding="5dp"
         android:textColor="@color/light_black"
-        android:textColorHint="@color/light_gray"
-        android:textSize="15dp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddMatch" />
+        app:layout_constraintTop_toBottomOf="@+id/tvAddMatch"
+        android:importantForAutofill="no" />
 
     <Button
         android:id="@+id/btnDatePicker"
@@ -88,9 +89,10 @@
         android:padding="5dp"
         android:textColor="@color/light_black"
         android:textColorHint="@color/light_gray"
-        android:textSize="15dp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtDate" />
+        app:layout_constraintTop_toBottomOf="@+id/edtDate"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/edtGameMode"
@@ -106,9 +108,10 @@
         android:padding="5dp"
         android:textColor="@color/light_black"
         android:textColorHint="@color/light_gray"
-        android:textSize="15dp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtGame" />
+        app:layout_constraintTop_toBottomOf="@+id/edtGame"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/edtRival"
@@ -124,9 +127,10 @@
         android:padding="5dp"
         android:textColor="@color/light_black"
         android:textColorHint="@color/light_gray"
-        android:textSize="15dp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtGameMode" />
+        app:layout_constraintTop_toBottomOf="@+id/edtGameMode"
+        android:importantForAutofill="no" />
 
 
     <Spinner
@@ -187,9 +191,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:background="@drawable/btn_add_team"
-        android:onClick="addMatch"
         android:text="@string/action_add"
-        android:textColor="#fff"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnClose"
         app:layout_constraintHorizontal_bias="0.5"
@@ -230,5 +233,14 @@
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/red"
+        app:layout_constraintStart_toStartOf="@+id/edtDate"
+        app:layout_constraintTop_toBottomOf="@+id/edtDate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

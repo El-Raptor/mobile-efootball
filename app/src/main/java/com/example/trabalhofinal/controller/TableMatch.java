@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -184,8 +185,17 @@ public class TableMatch extends Table<Match> {
         imgAwayTeam = (ImageView) newMatchDialog.findViewById(R.id.imgAwayTeam);
         btnClose = (Button) newMatchDialog.findViewById(R.id.btnClose);
         btnAddMatch = (Button) newMatchDialog.findViewById(R.id.btnAddMatch);
+        final TextView tvWarning = newMatchDialog.findViewById(R.id.tvWarning);
 
         tvAddMatch.setText("Editar Partida");
+        edtDate.setFocusable(false);
+
+        edtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvWarning.setText(getResources().getString(R.string.message_warning));
+            }
+        });
 
         ArrayAdapter<String> adapter = new ArrayAdapter(
                 newMatchDialog.getContext(),
@@ -210,7 +220,8 @@ public class TableMatch extends Table<Match> {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         edtDate.setText(year + "-" + (month + 1) + "-" + dayOfMonth);
                     }
-                }, day, month, year);
+                }, year, month, day);
+                tvWarning.setText("");
                 dpd.show();
             }
         });

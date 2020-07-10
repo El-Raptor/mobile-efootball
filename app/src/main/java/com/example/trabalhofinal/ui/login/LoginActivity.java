@@ -58,7 +58,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 User user = createUser();
                 final String NO_EMAIL = getResources().getString(R.string.message_invalid_email);
-                if (!haveEmail(user)) {
+                final String NULL_VALUES = getResources().getString(R.string.message_null_values);
+
+                if (checkForEmptyValues(user.getPassword()) ||
+                        checkForEmptyValues(user.getEmail()))
+                    createToast(NULL_VALUES, NEGATIVE);
+                else if (!haveEmail(user)) {
                     createToast(NO_EMAIL, NEGATIVE);
                 }
                 else {

@@ -9,7 +9,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_teams">Times</string>
     <string name="menu_players">Jogadores</string>
-    <string name="title_activity_login">Login</string>
+    <string name="title_activity_login">e-football Scores - Login</string>
 
     <string name="prompt_game">Jogo</string>
     <string name="prompt_game_mode">Modo de Jogo</string>
@@ -18,6 +18,8 @@
     <string name="prompt_rival_team">Time do Adversário</string>
     <string name="prompt_password">Senha</string>
     <string name="prompt_confirm_password">Confirmar senha</string>
+    <string name="prompt_email">user@email.com</string>
+    <string name="prompt_username">Username</string>
 
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -42,9 +44,6 @@
     <string name="label_new_password">Nova Senha</string>
     <string name="label_edit_user">Nome de Usuário</string>
 
-    <string name="hint_email">user@email.com</string>
-    <string name="hint_username">Username</string>
-
     <string name="message_welcome">"Bem-vindo "</string>
     <string name="message_invalid_email">E-mail inválido!</string>
     <string name="message_invalid_password">Senha incorreta!</string>
@@ -56,10 +55,15 @@
     <string name="message_invalid_password_2">Senha deve ser diferente da sua antiga senha.</string>
     <string name="message_password_changed">Senha alterada com sucesso!</string>
     <string name="message_username_changed">Nome de usuário alterado!</string>
+    <string name="message_warning">Escolha a data no botão ao lado.</string>
     <string name="login_failed">"Login failed"</string>
 
-    <string name="tip_new_match">Nova partida</string>
+    <string name="content_description_logo">logo do app</string>
+    <string name="content_description_home_team">time do usuário</string>
+    <string name="content_description_away_tema">time de adversário</string>
 
+
+    <string name="tip_new_match">Nova partida</string>
     
     <string-array name="teams_array">
         <item>Aalborg BK</item>

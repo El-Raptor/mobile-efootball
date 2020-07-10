@@ -26,10 +26,9 @@ public class PlayerController {
         else {
             if (add)
                 updateAddPlayer(playerResult.get(0), db, player, loggedUser);
-            else if (player.getStats().getGamesPlayed() > 1)
-                updateRemovedPlayer(playerResult.get(0), db, player, loggedUser);
             else
-                db.deletePlayer(playerResult.get(0), loggedUser);
+                updateRemovedPlayer(playerResult.get(0), db, player, loggedUser);
+
         }
 
     }
